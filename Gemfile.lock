@@ -87,6 +87,15 @@ GEM
     ffi (1.13.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    hamlit (2.11.0)
+      temple (>= 0.8.2)
+      thor
+      tilt
+    hamlit-rails (0.2.3)
+      actionpack (>= 4.0.1)
+      activesupport (>= 4.0.1)
+      hamlit (>= 1.2.0)
+      railties (>= 4.0.1)
     i18n (1.8.3)
       concurrent-ruby (~> 1.0)
     listen (3.2.1)
@@ -190,6 +199,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    temple (0.8.2)
     thor (1.0.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
@@ -227,6 +237,7 @@ DEPENDENCIES
   byebug
   capybara (>= 2.15)
   factory_bot_rails (~> 5.2.0)
+  hamlit-rails
   listen (~> 3.2)
   pg (>= 0.18, < 2.0)
   puma (~> 4.1)
