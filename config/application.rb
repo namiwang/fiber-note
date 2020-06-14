@@ -32,5 +32,16 @@ module RoamOnRails
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid
     end
+
+    # NOTE
+    # required by stimulus reflex,
+    # https://docs.stimulusreflex.com/setup#session-storage
+    # 
+    # TODO
+    # - migrate to default cookie store after stimulus reflex supports it
+    # - setup redis as session store in production
+    #   - https://docs.stimulusreflex.com/deployment
+    # 
+    config.session_store :cache_store
   end
 end
