@@ -7,7 +7,9 @@
     "@rails/ujs": "^6.0.0",
     "@rails/webpacker": "4.2.2",
     "stimulus": "^1.1.1",
-    "turbolinks": "^5.2.0"
+    "ts-loader": "^7.0.5",
+    "turbolinks": "^5.2.0",
+    "typescript": "^3.9.5"
   },
   "version": "0.1.0",
   "devDependencies": {

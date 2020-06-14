@@ -11,6 +11,9 @@ import { Controller } from "stimulus"
 
 export default class extends Controller {
   connect() {
-    console.log('stimulus: notes--edit connected')
+    console.log('stimulus: notes--edit connected on:')
+    console.log(this.element)
   }
+
+  updateTitle() {}
 }

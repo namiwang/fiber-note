@@ -1,0 +1,4 @@
+#notes-edit{data: {controller: 'notes--edit'}}
+  notes#edit
+
+  = text_field_tag :post_title, @note.title, data: { action: 'notes--edit#updateTitle' }
