@@ -28,14 +28,14 @@ class Note {
 }
 
 export default class extends Controller {
-  static targets = ['editor', 'loader']
+  static targets = ['loader']
 
   // https://github.com/stimulusjs/stimulus/search?q=targets+typescript&type=Issues
-  editorTarget: Element
   loaderTarget: Element
 
   private note: Note
   private loadingStack = 0
+  private editorElement: Element
 
   connect() {
     console.log('stimulus: note connected on:')
@@ -44,6 +44,14 @@ export default class extends Controller {
     this.note = new Note(
       this.data.get('id')
     )
+
+    // HACK
+    // tried to use the `target` system provided by stimulus,
+    // yet the `editorTarget` assigned by stimulus
+    // doesn't have the `document` property added by trix
+    // maybe it's a timing/lifecycle thing
+    // https://github.com/stimulusjs/stimulus/issues/312
+    this.editorElement = document.querySelector('trix-editor')
   }
 
   async updateTitle(event: Event) {
@@ -58,9 +66,28 @@ export default class extends Controller {
     this.decreaseLoadingStack()
   }
 
-  async updateContent(event: Event) {
-    console.log(event)
+  // 
+  // content
+  // 
+
+  async updateContent(_event: Event) {
+    // amend content
+    // 1. force top level <li>
+    // 2. force <li> with uuid
+    // 3. markdown
+
+    this.forceTopLvLi()
   }
+
+  forceTopLvLi() {
+    let doc = this.editorElement.editor.getDocument()
+
+    console.log(doc)
+  }
+
+  // 
+  // loader
+  // 
 
   private increaseLoadingStack() {
     this.loadingStack += 1
