@@ -8,7 +8,7 @@
 // </div>
 
 import { Controller } from 'stimulus'
-import { Quill } from 'quill'
+import Quill from 'quill'
 
 class Note {
   constructor(
