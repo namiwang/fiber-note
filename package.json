@@ -6,15 +6,14 @@
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
     "@rails/webpacker": "4.2.2",
-    "quill": "^1.3.7",
     "stimulus": "^1.1.1",
+    "trix": "^1.2.3",
     "ts-loader": "^7.0.5",
     "turbolinks": "^5.2.0",
     "typescript": "^3.9.5"
   },
   "version": "0.1.0",
   "devDependencies": {
-    "@types/quill": "^2.0.3",
     "webpack-dev-server": "^3.11.0"
   }
 }

@@ -1,14 +1,6 @@
-// Visit The Stimulus Handbook for more details 
-// https://stimulusjs.org/handbook/introduction
-// 
-// This example controller works with specially annotated HTML like:
-//
-// <div data-controller="hello">
-//   <h1 data-target="hello.output"></h1>
-// </div>
-
 import { Controller } from 'stimulus'
-import Quill from 'quill'
+
+import 'trix'
 
 class Note {
   constructor(
@@ -36,13 +28,13 @@ class Note {
 }
 
 export default class extends Controller {
-  static targets = ['loader']
+  static targets = ['editor', 'loader']
 
   // https://github.com/stimulusjs/stimulus/search?q=targets+typescript&type=Issues
+  editorTarget: Element
   loaderTarget: Element
 
   private note: Note
-  private quill: Quill
   private loadingStack = 0
 
   connect() {
@@ -52,16 +44,6 @@ export default class extends Controller {
     this.note = new Note(
       this.data.get('id')
     )
-
-    this.quill = new Quill('#editor', {
-      debug: 'info',
-      modules: {
-        // toolbar: '#toolbar'
-      },
-      placeholder: 'Compose an epic...',
-      // readOnly: true,
-      theme: 'bubble'
-    })
   }
 
   async updateTitle(event: Event) {
@@ -74,6 +56,10 @@ export default class extends Controller {
     // TODO handle conflict
 
     this.decreaseLoadingStack()
+  }
+
+  async updateContent(event: Event) {
+    console.log(event)
   }
 
   private increaseLoadingStack() {

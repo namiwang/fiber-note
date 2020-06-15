@@ -3,5 +3,5 @@
 
   = text_field_tag :post_title, @note.title, data: {action: 'note#updateTitle'}
 
-  %main
-    #editor
+  = hidden_field_tag :note_content
+  %trix-editor{input: 'note_content', data: {target: 'note.editor', action: 'trix-change->note#updateContent'}}
