@@ -11,7 +11,7 @@
         "*": ["node_modules/*", "app/javascript/*"]
     },
     "sourceMap": true,
-    "target": "es5"
+    "target": "es6"
   },
   "exclude": [
     "**/*.spec.ts",

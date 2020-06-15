@@ -1,4 +1,4 @@
-#notes-edit{data: {controller: 'notes--edit'}}
-  notes#edit
+#notes-edit{data: {controller: 'note', note: {id: @note.id}}}
+  #loader{data: {target: 'note.loader'}} 0
 
-  = text_field_tag :post_title, @note.title, data: { action: 'notes--edit#updateTitle' }
+  = text_field_tag :post_title, @note.title, data: {action: 'note#updateTitle'}
