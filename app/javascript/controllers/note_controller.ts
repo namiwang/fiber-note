@@ -1,14 +1,11 @@
-// Visit The Stimulus Handbook for more details 
-// https://stimulusjs.org/handbook/introduction
-// 
-// This example controller works with specially annotated HTML like:
-//
-// <div data-controller="hello">
-//   <h1 data-target="hello.output"></h1>
-// </div>
-
 import { Controller } from 'stimulus'
-import Quill from 'quill'
+import Quill, { Sources } from 'quill'
+// TODO ts cant find declaration file for module 'quill-delta'
+// it's a mess between quill, quill-delta, and @types/quill
+// quill 1.3.7 depends on quill-delta 3
+// yet @types/quill is using quill-delta 4
+// let's revisit this issue after we migrate to quill-2
+import Delta from 'quill-delta'
 
 class Note {
   constructor(
@@ -53,15 +50,19 @@ export default class extends Controller {
       this.data.get('id')
     )
 
+    this.initEditor()
+  }
+
+  private initEditor() {
     this.quill = new Quill('#editor', {
       debug: 'info',
-      modules: {
-        // toolbar: '#toolbar'
-      },
+      modules: {},
       placeholder: 'Compose an epic...',
       // readOnly: true,
       theme: 'bubble'
     })
+
+    this.quill.on('text-change', this.updateContent)
   }
 
   async updateTitle(event: Event) {
@@ -74,6 +75,12 @@ export default class extends Controller {
     // TODO handle conflict
 
     this.decreaseLoadingStack()
+  }
+
+  async updateContent(delta: Delta, oldContents: Delta, sources: Sources) {
+    console.log(delta)
+    console.log(oldContents)
+    console.log(sources)
   }
 
   private increaseLoadingStack() {
