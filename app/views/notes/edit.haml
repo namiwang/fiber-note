@@ -2,3 +2,6 @@
   #loader{data: {target: 'note.loader'}} 0
 
   = text_field_tag :post_title, @note.title, data: {action: 'note#updateTitle'}
+
+  %main
+    #editor

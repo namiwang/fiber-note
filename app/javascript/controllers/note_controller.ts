@@ -7,7 +7,8 @@
 //   <h1 data-target="hello.output"></h1>
 // </div>
 
-import { Controller } from "stimulus"
+import { Controller } from 'stimulus'
+import { Quill } from 'quill'
 
 class Note {
   constructor(
@@ -41,7 +42,7 @@ export default class extends Controller {
   loaderTarget: Element
 
   private note: Note
-
+  private quill: Quill
   private loadingStack = 0
 
   connect() {
@@ -51,6 +52,16 @@ export default class extends Controller {
     this.note = new Note(
       this.data.get('id')
     )
+
+    this.quill = new Quill('#editor', {
+      debug: 'info',
+      modules: {
+        // toolbar: '#toolbar'
+      },
+      placeholder: 'Compose an epic...',
+      // readOnly: true,
+      theme: 'bubble'
+    })
   }
 
   async updateTitle(event: Event) {
