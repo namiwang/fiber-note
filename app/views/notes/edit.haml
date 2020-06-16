@@ -3,5 +3,20 @@
 
   = text_field_tag :post_title, @note.title, data: {action: 'note#updateTitle'}
 
-  = hidden_field_tag :note_content
-  %trix-editor{input: 'note_content', data: {target: 'note.editor', action: 'trix-change->note#updateContent'}}
+  #editor{data: {target: 'note.editor'}}
+  #content
+    %h1 h1
+    %p This is editable text. You can focus it and start typing
+    %p
+      To apply styling, you can select a piece of text and manipulate
+      its styling from the menu. The basic schema
+      supports <em>emphasis</em>, <strong>strong
+      text</strong>, <a href="http://marijnhaverbeke.nl/blog">links</a>, <code>code
+      font</code>, and <img src="/img/smiley.png"> images.
+    %p
+      Block-level structure can be manipulated with key bindings (try
+      ctrl-shift-2 to create a level 2 heading, or enter in an empty
+      textblock to exit the parent block), or through the menu.
+    %p
+      Try using the “list” item in the menu to wrap this paragraph in
+      a numbered list.

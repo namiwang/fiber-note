@@ -6,14 +6,23 @@
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
     "@rails/webpacker": "4.2.2",
+    "prosemirror-example-setup": "^1.1.2",
+    "prosemirror-model": "^1.10.0",
+    "prosemirror-schema-basic": "^1.1.2",
+    "prosemirror-schema-list": "^1.1.2",
+    "prosemirror-state": "^1.3.3",
+    "prosemirror-transform": "^1.2.6",
+    "prosemirror-view": "^1.14.13",
     "stimulus": "^1.1.1",
-    "trix": "^1.2.3",
     "ts-loader": "^7.0.5",
     "turbolinks": "^5.2.0",
     "typescript": "^3.9.5"
   },
   "version": "0.1.0",
   "devDependencies": {
+    "@types/prosemirror-model": "^1.7.2",
+    "@types/prosemirror-state": "^1.2.4",
+    "@types/prosemirror-view": "^1.11.4",
     "webpack-dev-server": "^3.11.0"
   }
 }
