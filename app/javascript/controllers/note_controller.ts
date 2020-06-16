@@ -1,5 +1,5 @@
 import { Controller } from 'stimulus'
-import Editor from './editor'
+import Editor from './note/editor'
 
 class Note {
   constructor(
