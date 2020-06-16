@@ -3,8 +3,7 @@
 
   = text_field_tag :post_title, @note.title, data: {action: 'note#updateTitle'}
 
-  #editor{data: {target: 'note.editor'}}
-  #content
+  #content-holder{data: {target: 'note.contentHolder'}}
     %h1 h1
     %p This is editable text. You can focus it and start typing
     %p
@@ -12,7 +11,7 @@
       its styling from the menu. The basic schema
       supports <em>emphasis</em>, <strong>strong
       text</strong>, <a href="http://marijnhaverbeke.nl/blog">links</a>, <code>code
-      font</code>, and <img src="/img/smiley.png"> images.
+      font</code>.
     %p
       Block-level structure can be manipulated with key bindings (try
       ctrl-shift-2 to create a level 2 heading, or enter in an empty
@@ -20,3 +19,4 @@
     %p
       Try using the “list” item in the menu to wrap this paragraph in
       a numbered list.
+  #editor{data: {target: 'note.editorHolder'}}

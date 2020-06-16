@@ -19,9 +19,12 @@ const RorSchema = new Schema({
 class Editor {
   private view: EditorView
 
-  constructor(element: Element) {
+  constructor(
+    editorHolder: Element,
+    contentHolder: Element
+  ) {
     let state = EditorState.create({
-      doc: DOMParser.fromSchema(RorSchema).parse(document.querySelector("#content")),
+      doc: DOMParser.fromSchema(RorSchema).parse(contentHolder),
       plugins: [
         buildInputRules(RorSchema),
         keymap(baseKeymap),
@@ -33,7 +36,7 @@ class Editor {
       ]
     })
 
-    this.view = new EditorView(element, {
+    this.view = new EditorView(editorHolder, {
       state: state,
       dispatchTransaction(transaction) {
         let view = this

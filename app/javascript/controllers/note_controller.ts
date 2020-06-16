@@ -27,10 +27,11 @@ class Note {
 }
 
 export default class extends Controller {
-  static targets = ['editor', 'loader']
+  static targets = ['editorHolder', 'contentHolder', 'loader']
 
   // https://github.com/stimulusjs/stimulus/search?q=targets+typescript&type=Issues
-  editorTarget: Element
+  editorHolderTarget: Element
+  contentHolderTarget: Element
   loaderTarget: Element
 
   private note: Note
@@ -49,7 +50,10 @@ export default class extends Controller {
   }
 
   private initEditor() {
-    this.editor = new Editor(this.editorTarget)
+    this.editor = new Editor(
+      this.editorHolderTarget,
+      this.contentHolderTarget,
+    )
   }
 
   async updateTitle(event: Event) {
