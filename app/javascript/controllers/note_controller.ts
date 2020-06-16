@@ -1,16 +1,5 @@
 import { Controller } from 'stimulus'
-
-import {EditorState} from "prosemirror-state"
-import {EditorView} from "prosemirror-view"
-import {Schema, DOMParser} from "prosemirror-model"
-import {schema} from "prosemirror-schema-basic"
-import {addListNodes} from "prosemirror-schema-list"
-import {buildInputRules, buildKeymap} from "prosemirror-example-setup"
-import {keymap} from "prosemirror-keymap"
-import {baseKeymap} from "prosemirror-commands"
-import {dropCursor} from "prosemirror-dropcursor"
-import {gapCursor} from "prosemirror-gapcursor"
-import {history} from "prosemirror-history"
+import Editor from './editor'
 
 class Note {
   constructor(
@@ -46,6 +35,7 @@ export default class extends Controller {
 
   private note: Note
   private loadingStack = 0
+  private editor: Editor
 
   connect() {
     console.log('stimulus: note connected on:')
@@ -59,28 +49,7 @@ export default class extends Controller {
   }
 
   private initEditor() {
-    // Mix the nodes from prosemirror-schema-list into the basic schema to
-    // create a schema with list support.
-    let mySchema = new Schema({
-      nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
-      marks: schema.spec.marks
-    })
-
-    let state = EditorState.create({
-      doc: DOMParser.fromSchema(mySchema).parse(document.querySelector("#content")),
-      plugins: [
-        buildInputRules(mySchema),
-        keymap(buildKeymap(mySchema)),
-        keymap(baseKeymap),
-        dropCursor(),
-        gapCursor(),
-        history(),
-      ]
-    })
-
-    let view = new EditorView(this.editorTarget, {
-      state: state
-    })
+    this.editor = new Editor(this.editorTarget)
   }
 
   async updateTitle(event: Event) {
