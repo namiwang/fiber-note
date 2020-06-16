@@ -17,11 +17,10 @@ const RorSchema = new Schema({
 })
 
 class Editor {
-  private state: EditorState
   private view: EditorView
 
   constructor(element: Element) {
-    this.state = EditorState.create({
+    let state = EditorState.create({
       doc: DOMParser.fromSchema(RorSchema).parse(document.querySelector("#content")),
       plugins: [
         buildInputRules(RorSchema),
@@ -35,7 +34,19 @@ class Editor {
     })
 
     this.view = new EditorView(element, {
-      state: this.state
+      state: state,
+      dispatchTransaction(transaction) {
+        let view = this
+
+        transaction.before
+
+        console.log(`transaction`)
+        console.log(transaction.before)
+        console.log(transaction.doc)
+
+        let newState = view.state.apply(transaction)
+        view.updateState(newState)
+      }
     })
   }
 }
