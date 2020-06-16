@@ -5,7 +5,12 @@ import {EditorView} from "prosemirror-view"
 import {Schema, DOMParser} from "prosemirror-model"
 import {schema} from "prosemirror-schema-basic"
 import {addListNodes} from "prosemirror-schema-list"
-import {exampleSetup} from "prosemirror-example-setup"
+import {buildInputRules, buildKeymap} from "prosemirror-example-setup"
+import {keymap} from "prosemirror-keymap"
+import {baseKeymap} from "prosemirror-commands"
+import {dropCursor} from "prosemirror-dropcursor"
+import {gapCursor} from "prosemirror-gapcursor"
+import {history} from "prosemirror-history"
 
 class Note {
   constructor(
@@ -61,11 +66,20 @@ export default class extends Controller {
       marks: schema.spec.marks
     })
 
+    let state = EditorState.create({
+      doc: DOMParser.fromSchema(mySchema).parse(document.querySelector("#content")),
+      plugins: [
+        buildInputRules(mySchema),
+        keymap(buildKeymap(mySchema)),
+        keymap(baseKeymap),
+        dropCursor(),
+        gapCursor(),
+        history(),
+      ]
+    })
+
     let view = new EditorView(this.editorTarget, {
-      state: EditorState.create({
-        doc: DOMParser.fromSchema(mySchema).parse(document.querySelector("#content")),
-        plugins: exampleSetup({schema: mySchema})
-      })
+      state: state
     })
   }
 
