@@ -2,14 +2,17 @@ import { Controller } from 'stimulus'
 import Editor from './note/editor'
 
 class Note {
+  private updatePath: string
+
   constructor(
-    private id: string
-  ){}
+    private id: string,
+    private title: string
+  ){
+    this.updatePath = `/notes/${this.id}`
+  }
 
   async updateTitle(newTitle: String) {
-    let path = `/notes/${this.id}`
-
-    let response = await fetch(path, {
+    let response = await fetch(this.updatePath, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -43,7 +46,8 @@ export default class NoteController extends Controller {
     console.log(this.element)
 
     this.note = new Note(
-      this.data.get('id')
+      this.data.get('id'),
+      this.data.get('title')
     )
 
     this.initEditor()
