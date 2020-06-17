@@ -1,0 +1,6 @@
+%h1 notes#index
+
+%ul
+  - @notes.each do |note|
+    %li
+      = link_to note.title, edit_note_path(note)
