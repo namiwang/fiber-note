@@ -26,7 +26,7 @@ class Note {
   }
 }
 
-export default class extends Controller {
+export default class NoteController extends Controller {
   static targets = ['editorHolder', 'contentHolder', 'loader']
 
   // https://github.com/stimulusjs/stimulus/search?q=targets+typescript&type=Issues
@@ -51,14 +51,14 @@ export default class extends Controller {
 
   private initEditor() {
     this.editor = new Editor(
+      this,
       this.editorHolderTarget,
       this.contentHolderTarget,
     )
   }
 
-  async updateTitle(event: Event) {
-    let input = <HTMLInputElement>event.target
-    let newTitle = input.value
+  async updateTitle(newTitle: string) {
+    console.log(`updateTitle: ${newTitle}`)
 
     this.increaseLoadingStack()
 
@@ -68,9 +68,8 @@ export default class extends Controller {
     this.decreaseLoadingStack()
   }
 
-  async updateContent(event: Event) {
-    console.log(event)
-  }
+  // async updateContent() {
+  // }
 
   private increaseLoadingStack() {
     this.loadingStack += 1

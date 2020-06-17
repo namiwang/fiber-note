@@ -1,8 +1,6 @@
 #notes-edit{data: {controller: 'note', note: {id: @note.id}}}
   #loader{data: {target: 'note.loader'}} 0
 
-  = text_field_tag :post_title, @note.title, data: {action: 'note#updateTitle'}
-
   #content-holder{data: {target: 'note.contentHolder'}}
     %h1 h1
     %p This is editable text. You can focus it and start typing
