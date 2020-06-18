@@ -4,15 +4,21 @@ import Editor from './note/editor'
 class Note {
   private updatePath: string
 
+  private updateTitleRequestController: AbortController
+
   constructor(
     private id: string,
-    private title: string
+    public title: string
   ){
     this.updatePath = `/notes/${this.id}`
   }
 
   async updateTitle(newTitle: String) {
+    this.updateTitleRequestController?.abort()
+    this.updateTitleRequestController = new AbortController
+
     let response = await fetch(this.updatePath, {
+      signal: this.updateTitleRequestController.signal,
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -25,7 +31,7 @@ class Note {
       })
     })
 
-    return response.ok
+    return response
   }
 }
 
@@ -61,16 +67,22 @@ export default class NoteController extends Controller {
     )
   }
 
-  // async updateTitle(newTitle: string) {
-  //   console.log(`updateTitle: ${newTitle}`)
+  // TODO reform logic around updating title and handling duplicate title
+  async updateTitle(newTitle: string) {
+    if (newTitle == this.note.title) { return }
+    console.log(`updateTitle: ${newTitle}`)
 
-  //   this.increaseLoadingStack()
+    this.increaseLoadingStack()
 
-  //   let responseOk = await this.note.updateTitle(newTitle)
-  //   // TODO handle conflict
+    let response = await this.note.updateTitle(newTitle)
+    if (!response.ok) {
+      // TODO handle conflict
+      console.error("update title response not ok")
+    }
 
-  //   this.decreaseLoadingStack()
-  // }
+    this.decreaseLoadingStack()
+    this.note.title = newTitle
+  }
 
   async updateContent(content) {
     console.log("note_controller:updateContent")

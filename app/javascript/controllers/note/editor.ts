@@ -62,6 +62,10 @@ export default class Editor {
     console.log(transaction)
 
     // update title as needed
+    let title = transaction.doc.content.firstChild?.textContent.trim()
+    editor.noteController.updateTitle(title)
+
+    // update content
     let doc = transaction.doc.toJSON()
     editor.noteController.updateContent(doc)
   }
