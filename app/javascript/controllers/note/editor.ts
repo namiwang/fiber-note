@@ -10,18 +10,9 @@ import { history } from "prosemirror-history"
 
 import NoteController from "controllers/note_controller"
 import { schema } from "./editor/schema"
+import { createBlockIdPlugin } from "./editor/block_id_plugin"
 
 type UpdateTitleHandler = (newTitle: string) => void
-
-// returns the new title or undefined
-function titleChanged(transaction: Transaction) {
-  let oldTitle = transaction.before.content.content[0].content.content[0].text
-  let newTitle = transaction.doc.content.content[0].content.content[0].text
-
-  if (oldTitle != newTitle) {
-    return newTitle
-  }
-}
 
 export default class Editor {
   constructor(
@@ -43,6 +34,7 @@ export default class Editor {
         dropCursor(),
         gapCursor(),
         history(),
+        createBlockIdPlugin(),
       ]
     })
 
@@ -66,12 +58,11 @@ export default class Editor {
 
     let editor = <Editor>this['editor']
 
-    console.log(transaction.doc)
+    console.log("dispatchedTransaction:")
+    console.log(transaction)
 
     // update title as needed
-    let newTitle = titleChanged(transaction)
-    if (newTitle) {
-      editor.noteController.updateTitle(newTitle)
-    }
+    let doc = transaction.doc.toJSON()
+    editor.noteController.updateContent(doc)
   }
 }

@@ -61,19 +61,21 @@ export default class NoteController extends Controller {
     )
   }
 
-  async updateTitle(newTitle: string) {
-    console.log(`updateTitle: ${newTitle}`)
+  // async updateTitle(newTitle: string) {
+  //   console.log(`updateTitle: ${newTitle}`)
 
-    this.increaseLoadingStack()
+  //   this.increaseLoadingStack()
 
-    let responseOk = await this.note.updateTitle(newTitle)
-    // TODO handle conflict
+  //   let responseOk = await this.note.updateTitle(newTitle)
+  //   // TODO handle conflict
 
-    this.decreaseLoadingStack()
-  }
-
-  // async updateContent() {
+  //   this.decreaseLoadingStack()
   // }
+
+  async updateContent(content) {
+    console.log("note_controller:updateContent")
+    console.log(content)
+  }
 
   private increaseLoadingStack() {
     this.loadingStack += 1
