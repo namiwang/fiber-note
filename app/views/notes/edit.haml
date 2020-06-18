@@ -4,7 +4,7 @@
   #content-holder{data: {target: 'note.contentHolder'}}
     %h1= @note.title
     %p This is editable text. You can focus it and start typing
-    %p
+    %p{data: {'block-id': 'foobar'}}
       To apply styling, you can select a piece of text and manipulate
       its styling from the menu. The basic schema
       supports <em>emphasis</em>, <strong>strong

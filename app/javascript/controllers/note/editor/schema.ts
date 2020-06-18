@@ -4,6 +4,17 @@ import * as basicSchema from 'prosemirror-schema-basic'
 
 const BLOCK_ID_ATTR = { default: '' }
 const BLOCK_ID_ATTRS = { block_id: BLOCK_ID_ATTR }
+function BLOCK_PARSE_DOM(tagName: string) {
+  return [{
+    tag: tagName,
+    getAttrs: (dom) => ({block_id: dom.getAttribute("data-block-id")})
+  }]
+}
+function BLOCK_TO_DOM_FUNC(tagName): Function {
+  return function(node) {
+    return [tagName, {"data-block-id": node.attrs.block_id}, 0]
+  }
+}
 
 // we extend the pre-defined nodes with a block_id attribute
 // spec https://prosemirror.net/docs/ref/#schema-basic
@@ -20,9 +31,9 @@ const nodes = {
   paragraph: {
     content: "inline*",
     group: "block",
-    parseDOM: [{tag: "p"}],
-    toDOM() { return ["p", 0] },
-    attrs: BLOCK_ID_ATTRS
+    attrs: BLOCK_ID_ATTRS,
+    parseDOM: BLOCK_PARSE_DOM("p"),
+    toDOM: BLOCK_TO_DOM_FUNC("p"),
   },
 
   // :: NodeSpec A blockquote (`<blockquote>`) wrapping one or more blocks.
@@ -30,17 +41,17 @@ const nodes = {
     content: "block+",
     group: "block",
     defining: true,
-    parseDOM: [{tag: "blockquote"}],
-    toDOM() { return ["blockquote", 0] },
-    attrs: BLOCK_ID_ATTRS
+    attrs: BLOCK_ID_ATTRS,
+    parseDOM: BLOCK_PARSE_DOM("blockquote"),
+    toDOM: BLOCK_TO_DOM_FUNC("blockquote"),
   },
 
   // :: NodeSpec A horizontal rule (`<hr>`).
   horizontal_rule: {
     group: "block",
-    parseDOM: [{tag: "hr"}],
-    toDOM() { return ["hr"] },
-    attrs: BLOCK_ID_ATTRS
+    attrs: BLOCK_ID_ATTRS,
+    parseDOM: BLOCK_PARSE_DOM("hr"),
+    toDOM: BLOCK_TO_DOM_FUNC("hr")
   },
 
   // // :: NodeSpec A heading textblock, with a `level` attribute that
@@ -66,7 +77,6 @@ const nodes = {
     defining: true,
     parseDOM: [{tag: 'h1'}],
     toDOM() { return ['h1', 0] },
-    attrs: BLOCK_ID_ATTRS
   },
 
   // :: NodeSpec A code listing. Disallows marks or non-text inline
@@ -78,9 +88,15 @@ const nodes = {
     group: "block",
     code: true,
     defining: true,
-    parseDOM: [{tag: "pre", preserveWhitespace: "full"}],
-    toDOM() { return ["pre", ["code", 0]] },
-    attrs: BLOCK_ID_ATTRS
+    attrs: BLOCK_ID_ATTRS,
+    parseDOM: [{
+      tag: "pre",
+      preserveWhitespace: "full",
+      getAttrs: (dom) => ({block_id: dom.getAttribute("data-block-id")})
+    }],
+    toDOM(node) {
+      return ["pre", {"data-block-id": node.attrs.block_id}, ["code", 0]]
+    },
   },
 
   // :: NodeSpec The text node.
@@ -131,11 +147,21 @@ const nodes = {
       order: {default: 1},
       block_id: BLOCK_ID_ATTR
     },
-    parseDOM: [{tag: "ol", getAttrs(dom) {
-      return {order: dom.hasAttribute("start") ? +dom.getAttribute("start") : 1}
-    }}],
+    parseDOM: [{
+      tag: "ol",
+      getAttrs(dom) {
+        let order = dom.hasAttribute("start") ? +dom.getAttribute("start") : 1
+        let blockId = dom.dom.getAttribute("data-block-id")
+        return {
+          order: order,
+          block_id: blockId,
+        }
+      }
+    }],
     toDOM(node) {
-      return node.attrs.order == 1 ? ["ol", 0] : ["ol", {start: node.attrs.order}, 0]
+      return node.attrs.order == 1 ?
+        ["ol", {"data-block-id": node.attrs.block_id}, 0] :
+        ["ol", {start: node.attrs.order, "data-block-id": node.attrs.block_id}, 0]
     },
   },
 
@@ -144,9 +170,9 @@ const nodes = {
   bullet_list: {
     content: "list_item+",
     group: "block",
-    parseDOM: [{tag: "ul"}],
-    toDOM() { return ["ul", 0] },
-    attrs: BLOCK_ID_ATTRS
+    attrs: BLOCK_ID_ATTRS,
+    parseDOM: BLOCK_PARSE_DOM("ul"),
+    toDOM: BLOCK_TO_DOM_FUNC("ul"),
   },
 
   // :: NodeSpec
