@@ -14,7 +14,7 @@ import { createBlockIdPlugin } from "./editor/block_id_plugin"
 
 type SerializedContent = [string, object]
 
-function serializedContent(doc): SerializedContent {
+function serializeDoc(doc): SerializedContent {
   let blocks: [] = doc.content.toJSON()
   // @ts-ignore
   let title = blocks.shift().content[0].text.trim()
@@ -53,6 +53,13 @@ export default class Editor {
     view['editor'] = this
   }
 
+
+  // NOTE
+  // so here's a tricky one,
+  // we implemented a plugin, to append a transaction
+  // yet here the `transaction` we receive is not that,
+  // is the transaction before the plugin one,
+  // so we have to use `newState.doc` to get the real current content
   dispatchTransaction(transaction: Transaction) {
     // `this` will be bound to this EditorView
     let view = this as unknown as EditorView
@@ -65,18 +72,9 @@ export default class Editor {
     if (!transaction.docChanged) { return }
 
     let editor = <Editor>this['editor']
+    let [title, blocks] = serializeDoc(newState.doc)
 
-    console.log("dispatchedTransaction:")
-    console.log(transaction)
-
-    // update title as needed
-    let [oldTitle, oldContent] = serializedContent(transaction.before)
-    let [newTitle, newContent] = serializedContent(transaction.doc)
-
-    if (oldTitle != newTitle) {
-      editor.noteController.updateTitle(newTitle)
-    }
-
-    editor.noteController.updateContent(newContent)
+    editor.noteController.updateTitle(title)
+    editor.noteController.updateBlocks(blocks)
   }
 }

@@ -24,7 +24,8 @@ export const createBlockIdPlugin = () => {
               !(node.type.name == 'h1') &&
               !node.attrs["block_id"]
             ) {
-              console.log('setting block_id')
+              // console.log('setting block_id for:')
+              // console.log(node)
 
               transaction.setNodeMarkup(
                 pos,
@@ -41,7 +42,7 @@ export const createBlockIdPlugin = () => {
             if (
               node.attrs["block_id"]
             ) {
-              console.log('stripping block_id')
+              // console.log('stripping block_id')
 
               transaction.setNodeMarkup(
                 pos,

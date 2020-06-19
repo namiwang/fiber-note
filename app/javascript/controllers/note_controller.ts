@@ -69,7 +69,6 @@ export default class NoteController extends Controller {
 
   // TODO reform logic around updating title and handling duplicate title
   async updateTitle(newTitle: string) {
-    if (newTitle == this.note.title) { return }
     console.log(`updateTitle: ${newTitle}`)
 
     this.increaseLoadingStack()
@@ -84,9 +83,9 @@ export default class NoteController extends Controller {
     this.note.title = newTitle
   }
 
-  async updateContent(content) {
-    console.log("note_controller:updateContent")
-    console.log(content)
+  async updateBlocks(blocks) {
+    console.log("note_controller:updateBlocks")
+    console.log(blocks)
   }
 
   private increaseLoadingStack() {
