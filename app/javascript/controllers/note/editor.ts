@@ -1,6 +1,5 @@
 import { EditorState, Transaction } from "prosemirror-state"
 import { EditorView } from "prosemirror-view"
-import { DOMParser } from "prosemirror-model"
 import { buildInputRules, buildKeymap } from "prosemirror-example-setup"
 import { keymap } from "prosemirror-keymap"
 import { baseKeymap } from "prosemirror-commands"
@@ -11,11 +10,12 @@ import { history } from "prosemirror-history"
 import NoteController from "controllers/note_controller"
 import { schema } from "./editor/schema"
 import { createBlockIdPlugin } from "./editor/block_id_plugin"
+import { mentionPlugin } from "./editor/mention_plugin"
 
-type SerializedContent = [string, object]
+type SerializedContent = [string, JSON[]]
 
 function serializeDoc(doc): SerializedContent {
-  let blocks: [] = doc.content.toJSON()
+  let blocks = doc.content.toJSON()
   // @ts-ignore
   let title = blocks.shift().content[0].text.trim()
 
@@ -31,6 +31,7 @@ export default class Editor {
     let state = EditorState.create({
       doc: schema.nodeFromJSON(contentJSON),
       plugins: [
+        mentionPlugin, // before keymap plugin to override keydown handlers
         buildInputRules(schema),
         // TODO keymap around enter -> new list item
         // https://discuss.prosemirror.net/t/lists-paragraph-inside-li-instead-of-new-list-item/455
@@ -52,7 +53,6 @@ export default class Editor {
     })
     view['editor'] = this
   }
-
 
   // NOTE
   // so here's a tricky one,
