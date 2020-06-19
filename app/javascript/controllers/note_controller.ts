@@ -5,6 +5,7 @@ class Note {
   private updatePath: string
 
   private updateTitleRequestController: AbortController
+  private updateBlocksRequestController: AbortController
 
   constructor(
     private id: string,
@@ -27,6 +28,27 @@ class Note {
       body: JSON.stringify({
         note: {
           title: newTitle
+        }
+      })
+    })
+
+    return response
+  }
+
+  async updateBlocks(blocks: object[]) {
+    this.updateBlocksRequestController?.abort()
+    this.updateBlocksRequestController = new AbortController
+
+    let response = await fetch(this.updatePath, {
+      signal: this.updateBlocksRequestController.signal,
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')['content'],
+      },
+      body: JSON.stringify({
+        note: {
+          blocks: blocks
         }
       })
     })
@@ -86,6 +108,16 @@ export default class NoteController extends Controller {
   async updateBlocks(blocks) {
     console.log("note_controller:updateBlocks")
     console.log(blocks)
+
+    this.increaseLoadingStack()
+
+    let response = await this.note.updateBlocks(blocks)
+    if (!response.ok) {
+      // TODO handle conflict
+      console.error("update blocks response not ok")
+    }
+
+    this.decreaseLoadingStack()
   }
 
   private increaseLoadingStack() {

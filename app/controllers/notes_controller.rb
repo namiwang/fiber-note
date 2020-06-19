@@ -24,7 +24,17 @@ class NotesController < ApplicationController
       else
         head :conflict
       end
-    # when new_content = params[:note][:content]
+    when new_blocks = params[:note][:blocks]
+      new_blocks.each do |block|
+        update_block! block
+      end
+
+      # TODO destroy blocks as needed
     end
+  end
+
+  private
+
+  def update_block! params
   end
 end
