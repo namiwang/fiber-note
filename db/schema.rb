@@ -10,11 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_13_074521) do
+ActiveRecord::Schema.define(version: 2020_06_19_060455) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "blocks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "note_id", null: false
+    t.jsonb "content", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["note_id"], name: "index_blocks_on_note_id"
+  end
 
   create_table "notes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
@@ -23,4 +31,5 @@ ActiveRecord::Schema.define(version: 2020_06_13_074521) do
     t.index ["title"], name: "index_notes_on_title", unique: true
   end
 
+  add_foreign_key "blocks", "notes"
 end

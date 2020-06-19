@@ -58,11 +58,10 @@ class Note {
 }
 
 export default class NoteController extends Controller {
-  static targets = ['editorHolder', 'contentHolder', 'loader']
+  static targets = ['editorHolder', 'loader']
 
   // https://github.com/stimulusjs/stimulus/search?q=targets+typescript&type=Issues
   editorHolderTarget: Element
-  contentHolderTarget: Element
   loaderTarget: Element
 
   private note: Note
@@ -85,7 +84,7 @@ export default class NoteController extends Controller {
     this.editor = new Editor(
       this,
       this.editorHolderTarget,
-      this.contentHolderTarget,
+      JSON.parse(this.data.get('content')),
     )
   }
 
@@ -106,9 +105,6 @@ export default class NoteController extends Controller {
   }
 
   async updateBlocks(blocks) {
-    console.log("note_controller:updateBlocks")
-    console.log(blocks)
-
     this.increaseLoadingStack()
 
     let response = await this.note.updateBlocks(blocks)

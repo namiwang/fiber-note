@@ -26,10 +26,10 @@ export default class Editor {
   constructor(
     private noteController: NoteController,
     editorHolder: Element,
-    contentHolder: Element,
+    contentJSON: JSON,
   ) {
     let state = EditorState.create({
-      doc: DOMParser.fromSchema(schema).parse(contentHolder),
+      doc: schema.nodeFromJSON(contentJSON),
       plugins: [
         buildInputRules(schema),
         // TODO keymap around enter -> new list item
@@ -73,6 +73,9 @@ export default class Editor {
 
     let editor = <Editor>this['editor']
     let [title, blocks] = serializeDoc(newState.doc)
+
+    console.log('notifying note_controller…')
+    console.log(newState.doc.toJSON())
 
     editor.noteController.updateTitle(title)
     editor.noteController.updateBlocks(blocks)
