@@ -12,7 +12,15 @@ import NoteController from "controllers/note_controller"
 import { schema } from "./editor/schema"
 import { createBlockIdPlugin } from "./editor/block_id_plugin"
 
-type UpdateTitleHandler = (newTitle: string) => void
+type SerializedContent = [string, object]
+
+function serializedContent(doc): SerializedContent {
+  let blocks: [] = doc.content.toJSON()
+  // @ts-ignore
+  let title = blocks.shift().content[0].text.trim()
+
+  return [title, blocks]
+}
 
 export default class Editor {
   constructor(
@@ -62,11 +70,13 @@ export default class Editor {
     console.log(transaction)
 
     // update title as needed
-    let title = transaction.doc.content.firstChild?.textContent.trim()
-    editor.noteController.updateTitle(title)
+    let [oldTitle, oldContent] = serializedContent(transaction.before)
+    let [newTitle, newContent] = serializedContent(transaction.doc)
 
-    // update content
-    let doc = transaction.doc.toJSON()
-    editor.noteController.updateContent(doc)
+    if (oldTitle != newTitle) {
+      editor.noteController.updateTitle(newTitle)
+    }
+
+    editor.noteController.updateContent(newContent)
   }
 }
