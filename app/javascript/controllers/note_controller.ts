@@ -9,7 +9,7 @@ class Note {
 
   constructor(
     private id: string,
-    public title: string
+    public title: string,
   ){
     this.updatePath = `/notes/${this.id}`
   }
@@ -35,7 +35,7 @@ class Note {
     return response
   }
 
-  async updateBlocks(blocks: object[]) {
+  async updateBlocks(blocks: JSON[]) {
     this.updateBlocksRequestController?.abort()
     this.updateBlocksRequestController = new AbortController
 
@@ -65,8 +65,9 @@ export default class NoteController extends Controller {
   loaderTarget: Element
 
   private note: Note
-  private loadingStack = 0
   private editor: Editor
+  private updatingTitle: boolean = false
+  private updatingBlocks: boolean = false
 
   connect() {
     console.log('stimulus: note connected on:')
@@ -92,7 +93,8 @@ export default class NoteController extends Controller {
   async updateTitle(newTitle: string) {
     console.log(`updateTitle: ${newTitle}`)
 
-    this.increaseLoadingStack()
+    this.updatingTitle = true
+    this.refreshLoader()
 
     let response = await this.note.updateTitle(newTitle)
     if (!response.ok) {
@@ -100,12 +102,15 @@ export default class NoteController extends Controller {
       console.error("update title response not ok")
     }
 
-    this.decreaseLoadingStack()
+    this.updatingTitle = false
+    this.refreshLoader()
+
     this.note.title = newTitle
   }
 
-  async updateBlocks(blocks) {
-    this.increaseLoadingStack()
+  async updateBlocks(blocks: JSON[]) {
+    this.updatingBlocks = true
+    this.refreshLoader()
 
     let response = await this.note.updateBlocks(blocks)
     if (!response.ok) {
@@ -113,20 +118,11 @@ export default class NoteController extends Controller {
       console.error("update blocks response not ok")
     }
 
-    this.decreaseLoadingStack()
-  }
-
-  private increaseLoadingStack() {
-    this.loadingStack += 1
-    this.refreshLoader()
-  }
-
-  private decreaseLoadingStack() {
-    this.loadingStack -= 1
+    this.updatingBlocks = false
     this.refreshLoader()
   }
 
   private refreshLoader() {
-    this.loaderTarget.innerHTML = `${this.loadingStack}`
+    this.loaderTarget.innerHTML = (this.updatingTitle && this.updatingBlocks).toString()
   }
 }
