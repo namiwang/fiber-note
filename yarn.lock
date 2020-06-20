@@ -6032,11 +6032,6 @@ prosemirror-keymap@^1.0.0:
     prosemirror-state "^1.0.0"
     w3c-keyname "^2.2.0"
 
-prosemirror-mentions@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/prosemirror-mentions/-/prosemirror-mentions-1.0.0.tgz#5aafa2c59a4bcc0dab2d8cd262a6ca87e8080a73"
-  integrity sha512-E+Tyoa3eUjZk6r9eORiEktpMSTfAteJ3GYaO5Xw16bEHaoMnTcYZeGyRK9Vzhm8QBMqqJQ6UHWIrVdgmgRVJpg==
-
 prosemirror-menu@^1.0.0:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/prosemirror-menu/-/prosemirror-menu-1.1.4.tgz#a845ae0e14ce1f92dd39d7f23caa6063265cd98c"

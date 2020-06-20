@@ -7,7 +7,6 @@
     "@rails/ujs": "^6.0.0",
     "@rails/webpacker": "4.2.2",
     "prosemirror-example-setup": "^1.1.2",
-    "prosemirror-mentions": "^1.0.0",
     "prosemirror-model": "^1.10.0",
     "prosemirror-schema-basic": "^1.1.2",
     "prosemirror-schema-list": "^1.1.2",

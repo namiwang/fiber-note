@@ -2,6 +2,8 @@ import OrderedMap from 'orderedmap'
 import { Schema } from 'prosemirror-model'
 import * as basicSchema from 'prosemirror-schema-basic'
 
+import { tagNode } from './mention_plugin/tag_node'
+
 const BLOCK_ID_ATTR = { default: '' }
 const BLOCK_ID_ATTRS = { block_id: BLOCK_ID_ATTR }
 function BLOCK_PARSE_DOM(tagName: string) {
@@ -183,6 +185,8 @@ const nodes = {
     toDOM() { return ["li", 0] },
     defining: true
   },
+
+  tag: tagNode
 }
 
 console.log(nodes)

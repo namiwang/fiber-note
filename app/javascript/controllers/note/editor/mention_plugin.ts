@@ -1,4 +1,4 @@
-import {addMentionNodes, addTagNodes, getMentionsPlugin} from 'prosemirror-mentions'
+import {getMentionsPlugin} from './mention_plugin/mention_plugin'
 
 /**
  * IMPORTANT: outer div's "suggestion-item-list" class is mandatory. The plugin uses this class for querying.
