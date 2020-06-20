@@ -10,7 +10,7 @@
 #
 # Indexes
 #
-#  index_notes_on_title  (title)
+#  index_notes_on_title  (title) UNIQUE
 #
 FactoryBot.define do
   factory :note do
