@@ -19,9 +19,11 @@ ActiveRecord::Schema.define(version: 2020_06_19_122341) do
   create_table "blocks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "note_id", null: false
     t.jsonb "content", null: false
+    t.string "tags", default: [], array: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["note_id"], name: "index_blocks_on_note_id"
+    t.index ["tags"], name: "index_blocks_on_tags", using: :gin
   end
 
   create_table "notes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
