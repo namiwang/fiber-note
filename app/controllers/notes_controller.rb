@@ -9,11 +9,14 @@ class NotesController < ApplicationController
     # prosemirror doesn't allow empty text node
     @note = Note.new(id: SecureRandom.uuid, title: 'untitled')
 
+    @available_tags = Note.distinct.pluck(:title)
+
     render :edit
   end
 
   def edit
     @note = Note.find params[:id]
+    @available_tags = Note.distinct.pluck(:title)
   end
 
   def update

@@ -55,14 +55,22 @@ var getNewState = function() {
 };
 
 /**
- * @param {JSONObject} opts
  * @returns {Plugin}
  */
-export function getMentionsPlugin() {
+export function getMentionsPlugin(
+  availableTags: string[]
+) {
   let opts = {
     tagTrigger: "#",
     getSuggestions: (text, done) => {
-      done([{tag: 'WikiLeaks'}, {tag: 'NetNeutrality'}])
+      let tags = availableTags
+        .filter((tag) => tag.includes(text))
+
+      if (!tags.includes(text)) {
+        tags.unshift(text)
+      }
+
+      done(tags.map((tag) => ({tag: tag})))
     },
     getSuggestionsHTML: items =>
       // outer div's "suggestion-item-list" class is mandatory. The plugin uses this class for querying.

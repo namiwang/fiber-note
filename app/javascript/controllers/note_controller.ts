@@ -86,6 +86,7 @@ export default class NoteController extends Controller {
       this,
       this.editorHolderTarget,
       JSON.parse(this.data.get('content')),
+      JSON.parse(this.data.get('availableTags')),
     )
   }
 

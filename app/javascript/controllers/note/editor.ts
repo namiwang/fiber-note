@@ -27,11 +27,13 @@ export default class Editor {
     private noteController: NoteController,
     editorHolder: Element,
     contentJSON: JSON,
+    availableTags: string[]
   ) {
     let state = EditorState.create({
       doc: schema.nodeFromJSON(contentJSON),
       plugins: [
-        getMentionsPlugin(), // before keymap plugin to override keydown handlers
+        // before keymap plugin to override keydown handlers
+        getMentionsPlugin(availableTags),
         buildInputRules(schema),
         // TODO keymap around enter -> new list item
         // https://discuss.prosemirror.net/t/lists-paragraph-inside-li-instead-of-new-list-item/455
