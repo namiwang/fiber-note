@@ -9,7 +9,7 @@ import { Decoration, DecorationSet } from "prosemirror-view";
  * @param {JSONObject} opts
  * @returns {JSONObject}
  */
-export function getMatch($position, opts) {
+function getMatch($position, opts) {
   // take current para text content upto cursor start.
   // this makes the regex simpler and parsing the matches easier.
   var parastart = $position.before();
@@ -75,27 +75,28 @@ var getNewState = function() {
  * @param {JSONObject} opts
  * @returns {Plugin}
  */
-export function getMentionsPlugin(opts) {
-  // default options
-  var defaultOpts = {
+export function getMentionsPlugin() {
+  let opts = {
     tagTrigger: "#",
-    allowSpace: true,
-    getSuggestions: (text, cb) => {
-      cb([]);
+    getSuggestions: (text, done) => {
+      setTimeout(() => {
+        // pass dummy tag suggestions
+        done([{tag: 'WikiLeaks'}, {tag: 'NetNeutrality'}])
+      }, 0)
     },
-    getSuggestionsHTML: items =>
-      '<div class="suggestion-item-list">' +
-      items
-        .map(i => '<div class="suggestion-item">' + i.name + "</div>")
-        .join("") +
-      "</div>",
+    getSuggestionsHTML: (items) =>
+      // outer div's "suggestion-item-list" class is mandatory. The plugin uses this class for querying.
+      // inner div's "suggestion-item" class is mandatory too for the same reasons
+      `<div class="suggestion-item-list">
+        ${
+          items.map(i => '<div class="suggestion-item">'+i.tag+'</div>').join('')
+        }
+      </div>`
+    ,
     activeClass: "suggestion-item-active",
     suggestionTextClass: "prosemirror-suggestion",
-    maxNoOfSuggestions: 10,
     delay: 500
   };
-
-  var opts = Object.assign({}, defaultOpts, opts);
 
   // timeoutId for clearing debounced calls
   var showListTimeoutId = null;

@@ -10,7 +10,7 @@ import { history } from "prosemirror-history"
 import NoteController from "controllers/note_controller"
 import { schema } from "./editor/schema"
 import { createBlockIdPlugin } from "./editor/block_id_plugin"
-import { mentionPlugin } from "./editor/mention_plugin"
+import { getMentionsPlugin } from "./editor/mention_plugin/mention_plugin"
 
 type SerializedContent = [string, JSON[]]
 
@@ -31,7 +31,7 @@ export default class Editor {
     let state = EditorState.create({
       doc: schema.nodeFromJSON(contentJSON),
       plugins: [
-        mentionPlugin, // before keymap plugin to override keydown handlers
+        getMentionsPlugin(), // before keymap plugin to override keydown handlers
         buildInputRules(schema),
         // TODO keymap around enter -> new list item
         // https://discuss.prosemirror.net/t/lists-paragraph-inside-li-instead-of-new-list-item/455
