@@ -1,5 +1,7 @@
 // ripped and stripped from https://github.com/joelewis/prosemirror-mentions/
 
+// TODO cleanup debounce
+
 import { Plugin, PluginKey } from "prosemirror-state";
 import { Decoration, DecorationSet } from "prosemirror-view";
 
@@ -84,18 +86,17 @@ export function getMentionsPlugin() {
         done([{tag: 'WikiLeaks'}, {tag: 'NetNeutrality'}])
       }, 0)
     },
-    getSuggestionsHTML: (items) =>
+    getSuggestionsHTML: items =>
       // outer div's "suggestion-item-list" class is mandatory. The plugin uses this class for querying.
       // inner div's "suggestion-item" class is mandatory too for the same reasons
-      `<div class="suggestion-item-list">
-        ${
-          items.map(i => '<div class="suggestion-item">'+i.tag+'</div>').join('')
-        }
-      </div>`
-    ,
+      '<div class="suggestion-item-list">' +
+      items
+        .map(i => '<div class="suggestion-item">' + i.tag + "</div>")
+        .join("") +
+      "</div>",
     activeClass: "suggestion-item-active",
     suggestionTextClass: "prosemirror-suggestion",
-    delay: 500
+    delay: 0
   };
 
   // timeoutId for clearing debounced calls
