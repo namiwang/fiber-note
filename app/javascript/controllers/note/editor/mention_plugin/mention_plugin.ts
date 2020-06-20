@@ -1,7 +1,5 @@
 // ripped and stripped from https://github.com/joelewis/prosemirror-mentions/
 
-// TODO cleanup debounce
-
 import { Plugin, PluginKey } from "prosemirror-state";
 import { Decoration, DecorationSet } from "prosemirror-view";
 
@@ -43,23 +41,6 @@ function getMatch($position, opts) {
   // else if no match don't return anything.
 }
 
-/**
- * Util to debounce call to a function.
- * >>> debounce(function(){}, 1000, this)
- */
-export const debounce = (function() {
-  var timeoutId = null;
-  return function(func, timeout, context) {
-    context = context || this;
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function() {
-      func.apply(context, arguments);
-    }, timeout);
-
-    return timeoutId;
-  };
-})();
-
 var getNewState = function() {
   return {
     active: false,
@@ -81,10 +62,7 @@ export function getMentionsPlugin() {
   let opts = {
     tagTrigger: "#",
     getSuggestions: (text, done) => {
-      setTimeout(() => {
-        // pass dummy tag suggestions
-        done([{tag: 'WikiLeaks'}, {tag: 'NetNeutrality'}])
-      }, 0)
+      done([{tag: 'WikiLeaks'}, {tag: 'NetNeutrality'}])
     },
     getSuggestionsHTML: items =>
       // outer div's "suggestion-item-list" class is mandatory. The plugin uses this class for querying.
@@ -96,11 +74,7 @@ export function getMentionsPlugin() {
       "</div>",
     activeClass: "suggestion-item-active",
     suggestionTextClass: "prosemirror-suggestion",
-    delay: 0
   };
-
-  // timeoutId for clearing debounced calls
-  var showListTimeoutId = null;
 
   // dropdown element
   var el = document.createElement("div");
@@ -264,7 +238,6 @@ export function getMentionsPlugin() {
           select(view, state, opts);
           return true;
         } else if (esc) {
-          clearTimeout(showListTimeoutId);
           hideList();
           this.state = getNewState();
           return true;
@@ -294,26 +267,20 @@ export function getMentionsPlugin() {
       return {
         update: view => {
           var state = this.key.getState(view.state);
+
           if (!state.text) {
             hideList();
-            clearTimeout(showListTimeoutId);
             return;
           }
-          // debounce the call to avoid multiple requests
-          showListTimeoutId = debounce(
-            function() {
-              // get suggestions and set new state
-              opts.getSuggestions(state.text, function(
-                suggestions
-              ) {
-                // update `state` argument with suggestions
-                state.suggestions = suggestions;
-                showList(view, state, suggestions, opts);
-              });
-            },
-            opts.delay,
-            this
-          );
+
+          // get suggestions and set new state
+          opts.getSuggestions(state.text, function(
+            suggestions
+          ) {
+            // update `state` argument with suggestions
+            state.suggestions = suggestions;
+            showList(view, state, suggestions, opts);
+          });
         }
       };
     }
