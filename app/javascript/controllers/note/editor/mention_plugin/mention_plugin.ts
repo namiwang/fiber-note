@@ -5,27 +5,6 @@ import { Decoration, DecorationSet } from "prosemirror-view";
 
 /**
  *
- * @param {String} mentionTrigger
- * @param {String} hashtagTrigger
- * @param {bool} allowSpace
- * @returns {Object}
- */
-export function getRegexp(mentionTrigger, hashtagTrigger, allowSpace) {
-  var mention = allowSpace
-    ? new RegExp("(^|\\s)" + mentionTrigger + "([\\w-\\+]+\\s?[\\w-\\+]*)$")
-    : new RegExp("(^|\\s)" + mentionTrigger + "([\\w-\\+]+)$");
-
-  // hashtags should never allow spaces. I mean, what's the point of allowing spaces in hashtags?
-  var tag = new RegExp("(^|\\s)" + hashtagTrigger + "([\\w-]+)$");
-
-  return {
-    mention: mention,
-    tag: tag
-  };
-}
-
-/**
- *
  * @param {ResolvedPosition} $position https://prosemirror.net/docs/ref/#model.Resolved_Positions
  * @param {JSONObject} opts
  * @returns {JSONObject}
@@ -36,25 +15,9 @@ export function getMatch($position, opts) {
   var parastart = $position.before();
   const text = $position.doc.textBetween(parastart, $position.pos, "\n", "\0");
 
-  var regex = getRegexp(
-    opts.mentionTrigger,
-    opts.hashtagTrigger,
-    opts.allowSpace
-  );
+  let regex = new RegExp("(^|\\s)" + opts.tagTrigger + "([\\w-\\+]+\\s?[\\w-\\+]*)$")
 
-  // only one of the below matches will be true.
-  var mentionMatch = text.match(regex.mention);
-  var tagMatch = text.match(regex.tag);
-
-  var match = mentionMatch || tagMatch;
-
-  // set type of match
-  var type;
-  if (mentionMatch) {
-    type = "mention";
-  } else if (tagMatch) {
-    type = "tag";
-  }
+  let match = text.match(regex)
 
   // if match found, return match with useful information.
   if (match) {
@@ -73,7 +36,6 @@ export function getMatch($position, opts) {
     return {
       range: { from: from, to: to },
       queryText: queryText,
-      type: type
     };
   }
   // else if no match don't return anything.
@@ -103,7 +65,6 @@ var getNewState = function() {
       from: 0,
       to: 0
     },
-    type: "", //mention or tag
     text: "",
     suggestions: [],
     index: 0 // current active suggestion index
@@ -117,10 +78,9 @@ var getNewState = function() {
 export function getMentionsPlugin(opts) {
   // default options
   var defaultOpts = {
-    mentionTrigger: "@",
-    hashtagTrigger: "#",
+    tagTrigger: "#",
     allowSpace: true,
-    getSuggestions: (type, text, cb) => {
+    getSuggestions: (text, cb) => {
       cb([]);
     },
     getSuggestionsHTML: items =>
@@ -149,7 +109,7 @@ export function getMentionsPlugin(opts) {
   // ----- methods operating on above properties -----
 
   var showList = function(view, state, suggestions, opts) {
-    el.innerHTML = opts.getSuggestionsHTML(suggestions, state.type);
+    el.innerHTML = opts.getSuggestionsHTML(suggestions);
 
     // attach new item event handlers
     el.querySelectorAll(".suggestion-item").forEach(function(itemNode, index) {
@@ -229,19 +189,10 @@ export function getMentionsPlugin(opts) {
 
   var select = function(view, state, opts) {
     var item = state.suggestions[state.index];
-    var attrs;
-    if (state.type === "mention") {
-      attrs = {
-        name: item.name,
-        id: item.id,
-        email: item.email
-      };
-    } else {
-      attrs = {
-        tag: item.tag
-      };
+    let attrs = {
+      tag: item.tag
     }
-    var node = view.state.schema.nodes[state.type].create(attrs);
+    var node = view.state.schema.nodes['tag'].create(attrs);
     var tr = view.state.tr.replaceWith(state.range.from, state.range.to, node);
 
     var newState = view.state.apply(tr);
@@ -276,7 +227,6 @@ export function getMentionsPlugin(opts) {
         if (match) {
           newState.active = true;
           newState.range = match.range;
-          newState.type = match.type;
           newState.text = match.queryText;
         }
 
@@ -351,7 +301,7 @@ export function getMentionsPlugin(opts) {
           showListTimeoutId = debounce(
             function() {
               // get suggestions and set new state
-              opts.getSuggestions(state.type, state.text, function(
+              opts.getSuggestions(state.text, function(
                 suggestions
               ) {
                 // update `state` argument with suggestions
