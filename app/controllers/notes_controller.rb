@@ -5,16 +5,13 @@ class NotesController < ApplicationController
 
   def new
     # TODO let's believe uuid wont conflict for now
-    @note = Note.new(id: SecureRandom.uuid, title: nil)
-
-    @available_tags = Note.distinct.pluck(:title)
+    @note = Note.new(id: SecureRandom.uuid, title: params[:title])
 
     render :edit
   end
 
   def edit
     @note = Note.find params[:id]
-    @available_tags = Note.distinct.pluck(:title)
   end
 
   def update
