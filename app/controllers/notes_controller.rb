@@ -4,10 +4,8 @@ class NotesController < ApplicationController
   end
 
   def new
-    # TODO HACK
-    # kind of a hack
-    # prosemirror doesn't allow empty text node
-    @note = Note.new(id: SecureRandom.uuid, title: 'untitled')
+    # TODO let's believe uuid wont conflict for now
+    @note = Note.new(id: SecureRandom.uuid, title: nil)
 
     @available_tags = Note.distinct.pluck(:title)
 
