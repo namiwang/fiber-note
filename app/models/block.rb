@@ -21,4 +21,29 @@
 class Block < ApplicationRecord
   belongs_to :note
   taggable_array :tags
+
+  after_save :parse_tags
+
+  private
+
+  def parse_tags
+    tmp_tags = []
+
+    parse_tags_from_node self.content, tmp_tags
+
+    update_column :tags, tmp_tags.compact.uniq
+  end
+
+  def parse_tags_from_node node, tmp_tags
+    case
+    when node['type'] == 'tag'
+      tmp_tags << node['attrs']['tag']
+    when nodes = node['content']
+      nodes.each do |sub_node|
+        parse_tags_from_node sub_node, tmp_tags
+      end
+    end
+
+    tmp_tags
+  end
 end

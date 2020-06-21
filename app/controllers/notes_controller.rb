@@ -22,6 +22,8 @@ class NotesController < ApplicationController
   def update
     @note = Note.find_or_initialize_by(id: params[:id])
 
+    new_blocks = params[:note][:blocks]
+
     new_blocks.each do |block|
       create_or_update_block! block
     end
