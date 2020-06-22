@@ -4,6 +4,10 @@ class Notes::TitleController < ApplicationController
 
     title = params[:note][:title]
 
+    if @note.title == title
+      head :ok and return
+    end
+
     if Note.where(title: title).exists?
       head :conflict and return
     end

@@ -39,7 +39,7 @@ class Note {
     this.updateBlocksRequestController?.abort()
     this.updateBlocksRequestController = new AbortController
 
-    return await this.request(`/notes/${this.id}`, {note: {blocks: blocks}})
+    return await this.request(`/notes/${this.id}`, {note: {blocks: JSON.stringify(blocks)}})
   }
 }
 

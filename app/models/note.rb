@@ -33,7 +33,16 @@ class Note < ApplicationRecord
       }
     end
 
-    blocks = Block.where(id: ordered_block_ids).map(&:content)
+    # blocks = Block.where(id: ordered_block_ids).map(&:content)
+    # NOTE
+    # simply `Block.where(id: ordered_block_ids)` will NOT preserve the order of id
+    # https://stackoverflow.com/questions/866465/order-by-the-in-value-list
+    # 
+    # TODO PERFORMANCE
+    # 
+    blocks = ordered_block_ids.map do |b_id|
+      Block.find(b_id).content
+    end
 
     doc = {
       type: 'doc',

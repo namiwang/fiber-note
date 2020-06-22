@@ -17,13 +17,13 @@ class NotesController < ApplicationController
   def update
     @note = Note.find_or_initialize_by(id: params[:id])
 
-    new_blocks = params[:note][:blocks]
+    new_blocks = JSON.parse params[:note][:blocks]
 
     new_blocks.each do |block|
       create_or_update_block! block
     end
 
-    ordered_block_ids = new_blocks.map{|b| b[:attrs][:block_id] }
+    ordered_block_ids = new_blocks.map{|b| b['attrs']['block_id'] }
     @note.update! ordered_block_ids: ordered_block_ids
 
     # TODO NOTE is this an active record issue?
@@ -41,8 +41,8 @@ class NotesController < ApplicationController
   private
 
   def create_or_update_block! params
-    id = params[:attrs][:block_id]
-    content = params.permit!.to_h
+    id = params['attrs']['block_id']
+    content = params
 
     block = @note.blocks.find_or_initialize_by id: id
     block.update! content: content
