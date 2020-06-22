@@ -7,6 +7,9 @@ class Note {
 
   constructor(
     private id: string,
+
+    // title used in the last, or current request
+    // or the init value
     private title: string,
   ){}
 
@@ -23,6 +26,11 @@ class Note {
   }
 
   async updateTitle(newTitle: string) {
+    if (newTitle == this.title) { return }
+    this.title = newTitle
+
+    console.log(`note.updateTitle: ${newTitle}`)
+
     this.updateTitleRequestController?.abort()
     this.updateTitleRequestController = new AbortController
 
@@ -83,8 +91,6 @@ export default class NoteController extends Controller {
 
   // TODO reform logic around updating title and handling duplicate title
   async updateTitle(newTitle: string) {
-    console.log(`updateTitle: ${newTitle}`)
-
     this.duplicatedTitle = null
     this.refreshTitleMerger()
 
