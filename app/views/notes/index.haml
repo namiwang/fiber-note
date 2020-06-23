@@ -8,4 +8,4 @@
       = link_to note.title, edit_note_path(note)
   - @no_note_tags.each do |tag|
     %li
-      = link_to tag, new_note_by_tag_path(title: tag)
+      = link_to tag, new_note_from_tag_path(tag)
