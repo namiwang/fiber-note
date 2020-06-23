@@ -5,7 +5,7 @@
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
-    "@rails/webpacker": "4.2.2",
+    "@rails/webpacker": "5.1.1",
     "bootstrap": "^4.5.0",
     "bootswatch": "^4.5.0",
     "cytoscape": "^3.15.1",
