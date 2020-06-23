@@ -13,3 +13,13 @@
  *= require_tree .
  *= require_self
  */
+
+@import "bootswatch/dist/slate/variables"
+@import "bootstrap/scss/bootstrap"
+@import "bootswatch/dist/slate/bootswatch"
+
+body
+  > .container-fluid
+    > .row
+      > nav, > main
+        height: 100vh

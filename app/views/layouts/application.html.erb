@@ -11,27 +11,23 @@
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
     <%# TODO %>
     <link rel=stylesheet href="https://prosemirror.net/css/editor.css">
   </head>
 
   <body>
-    <nav class="navbar navbar-light bg-light">
-      <a class="navbar-brand" href="#">roam on rails</a>
-    </nav>
+    <div class="container-fluid p-0">
+      <div class="row no-gutters">
 
-    <div class="container-fluid">
-      <div class="row">
+        <nav class="col-md-2 nav flex-column">
+          <h5 class="nav-link pt-3">roam on rails</h5 class="nav-link">
 
-        <nav class="col-md-3 nav flex-column">
           <a class="nav-link" href="<%= notes_path %>">Notes & Tags</a>
           <a class="nav-link" href="#">Calendar</a>
           <a class="nav-link" href="<%= network_path %>">Network graph</a>
         </nav>
 
-        <main class="col-md-9">
+        <main class="col-md-10 bg-light text-dark">
           <%= yield %>
         </main>
 
