@@ -1,6 +1,7 @@
 class NotesController < ApplicationController
   def index
     @notes = Note.all
+    @no_note_tags = Block.all_tags - Note.pluck(:title)
   end
 
   def new

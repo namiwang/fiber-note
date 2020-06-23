@@ -1,6 +1,7 @@
 import { Controller } from 'stimulus'
 
 import cytoscape from 'cytoscape'
+import { nodes } from 'prosemirror-schema-basic'
 
 export default class extends Controller {
   static targets = ['graph']
@@ -16,26 +17,16 @@ export default class extends Controller {
   }
 
   private initGraph() {
-    cytoscape({
+    let nodes = JSON.parse(this.data.get('nodes'))
+    let edges = JSON.parse(this.data.get('edges'))
+
+    let cy = cytoscape({
       container: this.graphTarget,
       elements: {
-        nodes: [
-          {
-            data: { id: 'a' }
-          },
-          {
-            data: { id: 'b' }
-          }
-        ],
-        edges: [
-          {
-            data: { id: 'ab', source: 'a', target: 'b' }
-          }
-        ]
+        nodes: nodes,
+        edges: edges
       },
-      layout: {
-        name: 'preset'
-      },
+      layout: { name: 'cose' },
       style: [
         {
           selector: 'node',
@@ -45,6 +36,9 @@ export default class extends Controller {
         }
       ]
     })
-  }
 
+    cy.on('tap', 'node', function(){
+      window.location.href = this.data('href')
+    })
+  }
 }

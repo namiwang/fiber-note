@@ -2,12 +2,10 @@
 
 = link_to 'new', new_note_path
 
-- no_note_tags = Block.all_tags - Note.pluck(:title)
-
 %ul
   - @notes.each do |note|
     %li
       = link_to note.title, edit_note_path(note)
-  - no_note_tags.each do |tag|
+  - @no_note_tags.each do |tag|
     %li
-      = link_to tag, new_note_path(title: tag)
+      = link_to tag, new_note_by_tag_path(title: tag)
