@@ -3,5 +3,7 @@ Rails.application.routes.draw do
     resource :title, only: [:update], controller: 'notes/title'
   end
 
+  resource :network, only: [:show], controller: 'network'
+
   root to: 'notes#index'
 end
