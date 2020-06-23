@@ -13,9 +13,9 @@ class Note {
     private title: string,
   ){}
 
-  async request(path: string, body: object) {
+  async request(path: string, signal: AbortSignal, body: object) {
     return await fetch(path, {
-      signal: this.updateTitleRequestController.signal,
+      signal: signal,
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -34,7 +34,11 @@ class Note {
     this.updateTitleRequestController?.abort()
     this.updateTitleRequestController = new AbortController
 
-    let response = await this.request(`/notes/${this.id}/title`, {note: {title: newTitle}})
+    let response = await this.request(
+      `/notes/${this.id}/title`,
+      this.updateTitleRequestController.signal,
+      {note: {title: newTitle}}
+    )
 
     if (response.ok) {
       this.title = newTitle
@@ -47,7 +51,11 @@ class Note {
     this.updateBlocksRequestController?.abort()
     this.updateBlocksRequestController = new AbortController
 
-    return await this.request(`/notes/${this.id}`, {note: {blocks: JSON.stringify(blocks)}})
+    return await this.request(
+      `/notes/${this.id}`,
+      this.updateBlocksRequestController.signal,
+      {note: {blocks: JSON.stringify(blocks)}}
+    )
   }
 }
 
