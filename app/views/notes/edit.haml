@@ -19,7 +19,7 @@
       %a.list-group-item.list-group-item-secondary{href: new_note_from_tag_path(tag)}
         = tag
 
-  .col-md-10{data: {controller: 'note', note: {id: @note.id, title: @note.title, content: @note.content_json, available_tags: @available_tags}}}
+  #editor.col-md-10{data: {controller: 'note', note: {id: @note.id, title: @note.title, content: @note.content_json, available_tags: @available_tags}}}
     #loader{data: {target: 'note.loader'}} loading
     #title-merger{data: {target: 'note.titleMerger'}}
-    #editor{data: {target: 'note.editorHolder'}}
+    #editor-holder.p-3{data: {target: 'note.editorHolder'}}

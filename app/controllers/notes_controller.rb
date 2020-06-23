@@ -1,5 +1,6 @@
 class NotesController < ApplicationController
   before_action :list_notes_for_nav, only: [:new, :edit]
+  before_action :list_tags_for_editor, only: [:new, :edit]
 
   def new
     # TODO let's believe uuid wont conflict for now
@@ -41,6 +42,10 @@ class NotesController < ApplicationController
   def list_notes_for_nav
     @notes = Note.all
     @no_note_tags = Block.all_tags - Note.pluck(:title)
+  end
+
+  def list_tags_for_editor
+    @available_tags = Block.all_tags
   end
 
   def create_or_update_block! params
