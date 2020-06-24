@@ -100,6 +100,7 @@ export default class NoteController extends Controller {
       JSON.parse(this.data.get('content')),
       JSON.parse(this.data.get('availableTags')),
     )
+    this.editor.focusAtEnd()
   }
 
   updateTitleLater(title: string) {

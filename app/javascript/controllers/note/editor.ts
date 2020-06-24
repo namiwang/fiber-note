@@ -1,4 +1,4 @@
-import { EditorState, Transaction } from "prosemirror-state"
+import { EditorState, Selection, Transaction } from "prosemirror-state"
 import { EditorView } from "prosemirror-view"
 import { buildInputRules, buildKeymap } from "prosemirror-example-setup"
 import { keymap } from "prosemirror-keymap"
@@ -23,6 +23,8 @@ function serializeDoc(doc): SerializedContent {
 }
 
 export default class Editor {
+  private view: EditorView
+
   constructor(
     private noteController: NoteController,
     editorHolder: Element,
@@ -49,11 +51,21 @@ export default class Editor {
       ]
     })
 
-    let view = new EditorView(editorHolder, {
+    this.view = new EditorView(editorHolder, {
       state: state,
       dispatchTransaction: this.dispatchTransaction
     })
-    view['editor'] = this
+    this.view['editor'] = this
+  }
+
+  focusAtEnd() {
+    this.view.focus()
+
+    // set cursor at the end
+    let selection = Selection.atEnd(this.view.docView.node)
+    let tr = this.view.state.tr.setSelection(selection)
+    let state = this.view.state.apply(tr)
+    this.view.updateState(state)
   }
 
   // NOTE
