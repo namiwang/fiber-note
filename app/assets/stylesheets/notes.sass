@@ -2,16 +2,15 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
 
-#notes-edit
-  ul#notes-nav
-    // HACK same with the background of <li>
-    background-color: #dadcde
+ul#notes-nav
+  // HACK same with the background of <li>
+  background-color: #dadcde
 
-  #editor
-    #editor-holder
-      .ProseMirror
-        &:focus
-          outline: none
+  // TODO maybe hide scroll bar
+
+.ProseMirror
+  &:focus
+    outline: none
 
 // TODO cleanup
 .suggestion-item-active

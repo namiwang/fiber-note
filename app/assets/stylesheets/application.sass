@@ -18,8 +18,12 @@
 @import "bootstrap/scss/bootstrap"
 @import "bootswatch/dist/slate/bootswatch"
 
-body
-  > .container-fluid
-    > .row
-      > nav, > main
-        height: 100vh
+@include media-breakpoint-up(md)
+  body
+    height: 100vh
+    > .container-fluid
+      height: 100%
+      > .row
+        height: 100%
+        > [class^="col-"]
+          height: 100%
