@@ -59,6 +59,8 @@ class Note {
   }
 }
 
+const DEBOUNCE_DURATION = 200
+
 export default class NoteController extends Controller {
   static targets = ['editorHolder', 'loader', 'titleMerger']
 
@@ -72,6 +74,9 @@ export default class NoteController extends Controller {
   private updatingTitle: boolean = false
   private updatingBlocks: boolean = false
   private duplicatedTitle: string = null
+
+  private updatingTitleDebouncer
+  private updatingBlocksDebouncer
 
   connect() {
     console.log('stimulus: note connected on:')
@@ -94,6 +99,28 @@ export default class NoteController extends Controller {
       this.editorHolderTarget,
       JSON.parse(this.data.get('content')),
       JSON.parse(this.data.get('availableTags')),
+    )
+  }
+
+  updateTitleLater(title: string) {
+    if (this.updatingTitleDebouncer) {
+      clearTimeout(this.updatingTitleDebouncer)
+    }
+
+    this.updatingTitleDebouncer = setTimeout(
+      () => { this.updateTitle(title)},
+      DEBOUNCE_DURATION
+    )
+  }
+
+  updateBlocksLater(blocks: JSON[]) {
+    if (this.updatingBlocksDebouncer) {
+      clearTimeout(this.updatingBlocksDebouncer)
+    }
+
+    this.updatingBlocksDebouncer = setTimeout(
+      () => { this.updateBlocks(blocks)},
+      DEBOUNCE_DURATION
     )
   }
 
