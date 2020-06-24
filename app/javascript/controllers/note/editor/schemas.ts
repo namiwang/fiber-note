@@ -1,8 +1,7 @@
-import OrderedMap from 'orderedmap'
-import { Schema } from 'prosemirror-model'
+import { Schema, Node, DOMOutputSpec } from 'prosemirror-model'
 import * as basicSchema from 'prosemirror-schema-basic'
 
-import { tagNode } from '../mention_plugin/tag_node'
+import { tagNode } from './mention_plugin/tag_node'
 
 const BLOCK_ID_ATTR = { default: '' }
 const BLOCK_ID_ATTRS = { block_id: BLOCK_ID_ATTR }
@@ -12,7 +11,7 @@ function BLOCK_PARSE_DOM(tagName: string) {
     getAttrs: (dom) => ({block_id: dom.getAttribute("data-block-id")})
   }]
 }
-function BLOCK_TO_DOM_FUNC(tagName): Function {
+function BLOCK_TO_DOM_FUNC(tagName: string): (node: Node) => DOMOutputSpec {
   return function(node) {
     return [tagName, {"data-block-id": node.attrs.block_id}, 0]
   }
@@ -23,10 +22,9 @@ function BLOCK_TO_DOM_FUNC(tagName): Function {
 // base nodes https://github.com/prosemirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
 // list nodes https://github.com/prosemirror/prosemirror-schema-list/blob/master/src/schema-list.js
 const nodes = {
-  doc: {
-    // content: "block+"
-    content: 'h1 block+'
-  },
+  // doc: {
+  //   content: "block+"
+  // },
 
   // :: NodeSpec A plain paragraph textblock. Represented in the DOM
   // as a `<p>` element.
@@ -190,8 +188,53 @@ const nodes = {
 }
 
 export const nodeSchema = new Schema({
-  // TODO fix type error
-  // @ts-ignore
-  nodes: nodes,
+  // TODO fix type error, I'm thinking the @types package is out of date
+  nodes: {
+    doc: {
+      content: 'h1 block+',
+    },
+    paragraph: nodes.paragraph,
+    blockquote: nodes.blockquote,
+    horizontal_rule: nodes.horizontal_rule,
+    // @ts-ignore
+    h1: nodes.h1,
+    // @ts-ignore
+    code_block: nodes.code_block,
+    text: nodes.text,
+    // @ts-ignore
+    hard_break: nodes.hard_break,
+    // @ts-ignore
+    ordered_list: nodes.ordered_list,
+    bullet_list: nodes.bullet_list,
+    // @ts-ignore
+    list_item: nodes.list_item,
+    // @ts-ignore
+    tag: nodes.tag,
+  },
+  marks: basicSchema.schema.spec.marks
+})
+
+export const blockSchema = new Schema({
+  // TODO fix type error, I'm thinking the @types package is out of date
+  nodes: {
+    doc: {
+      content: 'block',
+    },
+    paragraph: nodes.paragraph,
+    blockquote: nodes.blockquote,
+    horizontal_rule: nodes.horizontal_rule,
+    // @ts-ignore
+    code_block: nodes.code_block,
+    text: nodes.text,
+    // @ts-ignore
+    hard_break: nodes.hard_break,
+    // @ts-ignore
+    ordered_list: nodes.ordered_list,
+    bullet_list: nodes.bullet_list,
+    // @ts-ignore
+    list_item: nodes.list_item,
+    // @ts-ignore
+    tag: nodes.tag,
+  },
   marks: basicSchema.schema.spec.marks
 })

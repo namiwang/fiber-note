@@ -1,5 +1,5 @@
 import { Controller } from 'stimulus'
-import { nodeSchema } from './note/editor/schemas/node'
+import { nodeSchema } from './note/editor/schemas'
 import Editor from './note/editor'
 
 class Note {

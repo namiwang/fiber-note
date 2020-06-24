@@ -63,6 +63,8 @@ export default class Editor {
     this.view.focus()
 
     // set cursor at the end
+    // TODO fix type error, I'm thinking the @types package is out of date
+    // @ts-ignore
     let selection = Selection.atEnd(this.view.docView.node)
     let tr = this.view.state.tr.setSelection(selection)
     let state = this.view.state.apply(tr)
