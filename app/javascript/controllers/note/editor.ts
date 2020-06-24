@@ -8,9 +8,9 @@ import { gapCursor } from "prosemirror-gapcursor"
 import { history } from "prosemirror-history"
 
 import NoteController from "controllers/note_controller"
-import { schema } from "./editor/schema"
 import { createBlockIdPlugin } from "./editor/block_id_plugin"
 import { getMentionsPlugin } from "./editor/mention_plugin/mention_plugin"
+import { Schema } from "prosemirror-model"
 
 type SerializedContent = [string, JSON[]]
 
@@ -27,6 +27,7 @@ export default class Editor {
 
   constructor(
     private noteController: NoteController,
+    schema: Schema,
     editorHolder: Element,
     contentJSON: JSON,
     availableTags: string[]

@@ -2,7 +2,7 @@ import OrderedMap from 'orderedmap'
 import { Schema } from 'prosemirror-model'
 import * as basicSchema from 'prosemirror-schema-basic'
 
-import { tagNode } from './mention_plugin/tag_node'
+import { tagNode } from '../mention_plugin/tag_node'
 
 const BLOCK_ID_ATTR = { default: '' }
 const BLOCK_ID_ATTRS = { block_id: BLOCK_ID_ATTR }
@@ -189,9 +189,7 @@ const nodes = {
   tag: tagNode
 }
 
-console.log(nodes)
-
-export const schema = new Schema({
+export const nodeSchema = new Schema({
   // TODO fix type error
   // @ts-ignore
   nodes: nodes,

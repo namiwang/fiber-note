@@ -1,4 +1,5 @@
 import { Controller } from 'stimulus'
+import { nodeSchema } from './note/editor/schemas/node'
 import Editor from './note/editor'
 
 class Note {
@@ -96,6 +97,7 @@ export default class NoteController extends Controller {
   private initEditor() {
     this.editor = new Editor(
       this,
+      nodeSchema,
       this.editorHolderTarget,
       JSON.parse(this.data.get('content')),
       JSON.parse(this.data.get('availableTags')),
