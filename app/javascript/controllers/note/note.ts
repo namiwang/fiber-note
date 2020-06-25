@@ -43,15 +43,4 @@ export default class Note {
 
     return response
   }
-
-  async updateBlocks(blocks: JSON[]) {
-    this.updateBlocksRequestController?.abort()
-    this.updateBlocksRequestController = new AbortController
-
-    return await this.request(
-      `/notes/${this.id}`,
-      this.updateBlocksRequestController.signal,
-      {note: {blocks: JSON.stringify(blocks)}}
-    )
-  }
 }

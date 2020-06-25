@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :notes, only: [:new, :edit, :update] do
+  resources :notes, only: [:new, :edit] do
     resource :title, only: [:update], controller: 'notes/title'
   end
 

@@ -2,6 +2,7 @@ import { Controller } from 'stimulus'
 import { nodeSchema } from './note/editor/schemas'
 import Editor from './note/editor'
 import Note from './note/note'
+import noteChannel from '../channels/note_channel'
 
 const DEBOUNCE_DURATION = 200
 
@@ -13,6 +14,7 @@ export default class NoteController extends Controller {
   loaderTarget: Element
   titleMergerTarget: Element
 
+  private noteId: string
   private note: Note
   private editor: Editor
   private updatingTitle: boolean = false
@@ -26,6 +28,7 @@ export default class NoteController extends Controller {
     console.log('stimulus: note connected on:')
     console.log(this.element)
 
+    this.noteId = this.data.get('id')
     this.note = new Note(
       this.data.get('id'),
       this.data.get('title')
@@ -93,24 +96,16 @@ export default class NoteController extends Controller {
     this.refreshLoader()
   }
 
+  // TODO complete callback
   async updateBlocks(blocks: JSON[]) {
     this.updatingBlocks = true
     this.refreshLoader()
 
-    try {
-      let response = await this.note.updateBlocks(blocks)
-      if (!response.ok) {
-        // TODO handle failure
-        console.error("update blocks response not ok")
-      }
-    } catch (AbortError) {}
-
-    this.updatingBlocks = false
-    this.refreshLoader()
+    noteChannel.updateBlocks(this.noteId, blocks)
   }
 
   private refreshLoader() {
-    this.loaderTarget.innerHTML = (this.updatingTitle && this.updatingBlocks).toString()
+    this.loaderTarget.innerHTML = (this.updatingTitle || this.updatingBlocks).toString()
   }
 
   private refreshTitleMerger() {
