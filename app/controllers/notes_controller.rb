@@ -5,7 +5,11 @@ class NotesController < ApplicationController
   def new
     # TODO let's believe uuid wont conflict for now
     @note = Note.new(id: SecureRandom.uuid, title: params[:title])
-    @linked_blocks = Block.with_any_tags(@note.title)
+    @linked_blocks = if @note.title.blank?
+      []
+    else
+      Block.with_any_tags(@note.title)
+    end
 
     render :edit
   end
