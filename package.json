@@ -20,7 +20,7 @@
     "ts-loader": "^7.0.5",
     "turbolinks": "^5.2.0",
     "typescript": "^3.9.5",
-    "uuidv4": "^6.1.0"
+    "uuidv4": "^6.1.1"
   },
   "version": "0.1.0",
   "devDependencies": {
