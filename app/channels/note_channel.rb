@@ -16,10 +16,9 @@ class NoteChannel < ApplicationCable::Channel
       create_or_update_block! note, block
     end
 
-    block_ids = new_blocks.map{|b| b['attrs']['block_id'] }
-    note.update! ordered_block_ids: block_ids
+    note.update! ordered_block_ids: new_blocks.map{|b| b['attrs']['block_id'] }
 
-    note.clear_dangling_blocks! block_ids
+    note.clear_dangling_blocks!
 
     broadcast_to note, { event: 'blocks_updated', requested_at: data['requested_at'] }
   end

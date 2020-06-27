@@ -24,7 +24,7 @@ class Note < ApplicationRecord
     # actually,
     # `Block.where(note: @note).where.not(id: ids)` is always empty as well,
     # yet `Block.where(note: @note).where(id: ids)` is fine
-    note.blocks.find_each do |b|
+    blocks.find_each do |b|
       b.destroy unless ordered_block_ids.include?(b.id)
     end
   end
