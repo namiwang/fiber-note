@@ -1,6 +1,6 @@
 class NoteChannel < ApplicationCable::Channel
   def subscribed
-    # stream_from "some_channel"
+    stream_for Note.find_or_initialize_by(id: params[:note_id])
   end
 
   def unsubscribed
@@ -31,6 +31,8 @@ class NoteChannel < ApplicationCable::Channel
     note.blocks.find_each do |b|
       b.destroy unless ordered_block_ids.include?(b.id)
     end
+
+    broadcast_to note, { event: 'blocks_updated', requested_at: data['requested_at'] }
   end
 
   private

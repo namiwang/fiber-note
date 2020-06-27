@@ -1,24 +1,31 @@
 import consumer from "./consumer"
 
-export default consumer.subscriptions.create("NoteChannel", {
-  connected() {
-    console.log('noteChannel connected')
-  },
+export default function constructNodeChannel(noteId: string) {
+  return consumer.subscriptions.create({
+    channel: 'NoteChannel',
+    note_id: noteId
+  }, {
+    connected() {
+      console.log('noteChannel:connected')
+    },
 
-  disconnected() {
-    console.log('noteChannel disconnected')
-  },
+    disconnected() {
+      console.log('noteChannel:disconnected')
+    },
 
-  received(data) {
-    // Called when there's incoming data on the websocket for this channel
-  },
+    received(data) {
+      console.log('noteChannel:receive data:')
+      console.log(data)
+    },
 
-  updateBlocks(noteId: string, blocks: JSON[]) {
-    this.perform('update_blocks', {
-      note: {
-        id: noteId,
-        blocks: blocks
-      }
-    })
-  }
-})
+    updateBlocks(noteId: string, blocks: JSON[]) {
+      this.perform('update_blocks', {
+        note: {
+          id: noteId,
+          blocks: blocks
+        },
+        requested_at: Date.now()
+      })
+    }
+  })
+}

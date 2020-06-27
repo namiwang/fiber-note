@@ -1,4 +1,8 @@
+import constructNoteChannel from '../channels/note_channel'
+
 export default class Note {
+  private channel
+
   private updateTitleRequestController: AbortController
   private updateBlocksRequestController: AbortController
 
@@ -8,7 +12,13 @@ export default class Note {
     // title used in the last, or current request
     // or the init value
     private title: string,
-  ){}
+  ){
+    this.initChannel()
+  }
+
+  private initChannel() {
+    this.channel = constructNoteChannel(this.id)
+  }
 
   async request(path: string, signal: AbortSignal, body: object) {
     return await fetch(path, {
@@ -42,5 +52,9 @@ export default class Note {
     }
 
     return response
+  }
+
+  updateBlocks(blocks: JSON[]) {
+    this.channel.updateBlocks(this.id, blocks)
   }
 }

@@ -1,8 +1,7 @@
 import { Controller } from 'stimulus'
 import { nodeSchema } from './note/editor/schemas'
 import Editor from './note/editor'
-import Note from './note/note'
-import noteChannel from '../channels/note_channel'
+import Note from '../models/note'
 
 const DEBOUNCE_DURATION = 200
 
@@ -14,7 +13,6 @@ export default class NoteController extends Controller {
   loaderTarget: Element
   titleMergerTarget: Element
 
-  private noteId: string
   private note: Note
   private editor: Editor
   private updatingTitle: boolean = false
@@ -28,7 +26,6 @@ export default class NoteController extends Controller {
     console.log('stimulus: note connected on:')
     console.log(this.element)
 
-    this.noteId = this.data.get('id')
     this.note = new Note(
       this.data.get('id'),
       this.data.get('title')
@@ -101,7 +98,7 @@ export default class NoteController extends Controller {
     this.updatingBlocks = true
     this.refreshLoader()
 
-    noteChannel.updateBlocks(this.noteId, blocks)
+    this.note.updateBlocks(blocks)
   }
 
   private refreshLoader() {
