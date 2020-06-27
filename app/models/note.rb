@@ -15,6 +15,20 @@
 class Note < ApplicationRecord
   has_many :blocks, dependent: :destroy
 
+  # `dangling blocks` i.e. not in ordered_block_ids
+  def clear_dangling_blocks!
+    # TODO NOTE is this an active record issue?
+    # @note.blocks.where.not(id: ordered_block_ids).destroy_all
+    # `.blocks.where.not(id: ids)` is empty, if the there're no ordered
+    # ids in the `ids` list
+    # actually,
+    # `Block.where(note: @note).where.not(id: ids)` is always empty as well,
+    # yet `Block.where(note: @note).where(id: ids)` is fine
+    note.blocks.find_each do |b|
+      b.destroy unless ordered_block_ids.include?(b.id)
+    end
+  end
+
   def content_json
     title_node = if title
       {
