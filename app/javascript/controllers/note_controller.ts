@@ -28,7 +28,8 @@ export default class NoteController extends Controller {
 
     this.note = new Note(
       this.data.get('id'),
-      this.data.get('title')
+      () => this.handleBlocksUpdated(),
+      this.data.get('title'),
     )
 
     this.initEditor()
@@ -93,12 +94,18 @@ export default class NoteController extends Controller {
     this.refreshLoader()
   }
 
-  // TODO complete callback
   async updateBlocks(blocks: JSON[]) {
-    this.updatingBlocks = true
-    this.refreshLoader()
-
+    this.setUpdatingBlocks(true)
     this.note.updateBlocks(blocks)
+  }
+
+  private handleBlocksUpdated() {
+    this.setUpdatingBlocks(false)
+  }
+
+  private setUpdatingBlocks(value: boolean) {
+    this.updatingBlocks = value
+    this.refreshLoader()
   }
 
   private refreshLoader() {

@@ -1,13 +1,16 @@
-import constructNoteChannel from '../channels/note_channel'
+import consumer from "../channels/consumer"
 
 export default class Note {
   private channel
 
+  private latestUpdatingBlocksRequsetedAt: number
+
   private updateTitleRequestController: AbortController
-  private updateBlocksRequestController: AbortController
 
   constructor(
     private id: string,
+
+    private onBlocksUpdated: Function,
 
     // title used in the last, or current request
     // or the init value
@@ -17,7 +20,25 @@ export default class Note {
   }
 
   private initChannel() {
-    this.channel = constructNoteChannel(this.id)
+    this.channel = consumer.subscriptions.create({
+      channel: 'NoteChannel',
+      note_id: this.id
+    }, {
+      connected() { console.log('noteChannel:connected') },
+      disconnected() { console.log('noteChannel:disconnected') },
+      received: (data) => this.handleChannelData(data),
+    })
+  }
+
+  handleChannelData(data: object) {
+    switch (data['event']) {
+      case 'blocks_updated':
+        if (data['requested_at'] != this.latestUpdatingBlocksRequsetedAt) { return }
+        this.onBlocksUpdated()
+        break;
+      default:
+        break;
+    }
   }
 
   async request(path: string, signal: AbortSignal, body: object) {
@@ -55,6 +76,13 @@ export default class Note {
   }
 
   updateBlocks(blocks: JSON[]) {
-    this.channel.updateBlocks(this.id, blocks)
+    this.latestUpdatingBlocksRequsetedAt = Date.now()
+    this.channel.perform('update_blocks', {
+      note: {
+        id: this.id,
+        blocks: blocks
+      },
+      requested_at: this.latestUpdatingBlocksRequsetedAt
+    })
   }
 }
