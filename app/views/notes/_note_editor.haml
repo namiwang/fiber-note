@@ -1,9 +1,6 @@
-#note-editor.col-md-8.bg-light.text-dark{data: {controller: 'note', note: {id: @note.id, title: @note.title, content: @note.content_json, available_tags: @available_tags}}}
-  #loader{data: {target: 'note.loader'}} loading
-  #title-merger{data: {target: 'note.titleMerger'}}
-  #editor-holder.px-3.py-5{data: {target: 'note.editorHolder'}}
+-# locals: note
 
-  #linked-blocks
-    - @linked_blocks.each do |block|
-      %hr
-      = render partial: 'block_editor', locals: { block: block }
+#note-editor.text-dark{data: {controller: 'note', note: {id: note.id, title: note.title, content: note.content_json, available_tags: @available_tags}}}
+  .loader{data: {target: 'note.loader'}} loading
+  .title-merger{data: {target: 'note.titleMerger'}}
+  .editor-holder.px-3.py-5{data: {target: 'note.editorHolder'}}
