@@ -24,8 +24,16 @@ class Block < ApplicationRecord
 
   after_save :parse_tags
 
+  def as_doc_json
+    {
+      type: 'doc',
+      content: [content]
+    }.to_json
+  end
+
   private
 
+  # TODO failing when updating single block
   def parse_tags
     tmp_tags = []
 

@@ -1,6 +1,5 @@
 import { Controller } from 'stimulus'
-import { nodeSchema } from './note/editor/schemas'
-import Editor from './note/editor'
+import NoteEditor from './note/note_editor'
 import Note from '../models/note'
 
 export default class NoteController extends Controller {
@@ -11,7 +10,7 @@ export default class NoteController extends Controller {
   titleMergerTarget: HTMLElement
 
   private note: Note
-  private editor: Editor
+  private editor: NoteEditor
 
   private updatingTitle: boolean = false
   private updatingBlocks: boolean = false
@@ -30,9 +29,8 @@ export default class NoteController extends Controller {
   }
 
   private initEditor() {
-    this.editor = new Editor(
+    this.editor = new NoteEditor(
       this,
-      nodeSchema,
       this.element,
       JSON.parse(this.data.get('content')),
       JSON.parse(this.data.get('availableTags')),

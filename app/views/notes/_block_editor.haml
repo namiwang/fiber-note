@@ -1,15 +1,23 @@
 -# locals: block
 :ruby
   block_data = {
+    id: block.id,
+    content: block.as_doc_json,
+    note: {
+      id: block.note.id,
+    },
+    available_tags: @available_tags
+  }
+  data = {
     controller: 'block',
-    block: {
-      id: block.id,
-      content: block.content,
-      available_tags: @available_tags
-    }
+    block: block_data
   }
 
-.block-editor.text-dark{data: block_data}
+.block-editor.text-dark.border-top.px-3{data: data}
+  .note-link.py-1
+    in
+    %a.text-secondary{href: edit_note_path(block.note)}
+      block.note.title
+
   .banner
-    .loader.spinner-border.spinner-border-sm.text-secondary{data: {target: 'note.loader'}}
-    .editor-holder.p-3{data: {target: 'block.editorHolder'}}
+    .loader.spinner-border.spinner-border-sm.text-secondary{data: {target: 'block.loader'}}

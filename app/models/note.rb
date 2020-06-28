@@ -29,6 +29,7 @@ class Note < ApplicationRecord
     end
   end
 
+  # TODO rename? to_doc_json
   def content_json
     title_node = if title
       {

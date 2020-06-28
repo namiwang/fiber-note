@@ -10,7 +10,8 @@ import { history } from "prosemirror-history"
 import NoteController from "controllers/note_controller"
 import { createBlockIdPlugin } from "./editor/block_id_plugin"
 import { getMentionsPlugin } from "./editor/mention_plugin/mention_plugin"
-import { Schema } from "prosemirror-model"
+
+import { noteSchema } from './editor/schemas'
 
 type SerializedContent = [string, JSON[]]
 
@@ -22,28 +23,27 @@ function serializeDoc(doc): SerializedContent {
   return [title, blocks]
 }
 
-export default class Editor {
+export default class NoteEditor {
   private view: EditorView
 
   constructor(
     private noteController: NoteController,
-    schema: Schema,
     editorHolder: Element,
     contentJSON: JSON,
     availableTags: string[]
   ) {
     let state = EditorState.create({
-      doc: schema.nodeFromJSON(contentJSON),
+      doc: noteSchema.nodeFromJSON(contentJSON),
       plugins: [
         // before keymap plugin to override keydown handlers
         getMentionsPlugin(availableTags),
-        buildInputRules(schema),
+        buildInputRules(noteSchema),
         // TODO keymap around enter -> new list item
         // https://discuss.prosemirror.net/t/lists-paragraph-inside-li-instead-of-new-list-item/455
         // TODO keymap around tab and shift-tab
         // TODO extract hints about available keys
         // https://github.com/prosemirror/prosemirror-example-setup/blob/master/src/keymap.js
-        keymap(buildKeymap(schema)),
+        keymap(buildKeymap(noteSchema)),
         keymap(baseKeymap),
         dropCursor(),
         gapCursor(),
@@ -88,7 +88,7 @@ export default class Editor {
 
     if (!transaction.docChanged) { return }
 
-    let editor = <Editor>this['editor']
+    let editor = <NoteEditor>this['editor']
     let [title, blocks] = serializeDoc(newState.doc)
 
     console.log('notifying note_controller…')

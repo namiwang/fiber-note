@@ -187,7 +187,7 @@ const nodes = {
   tag: tagNode
 }
 
-export const nodeSchema = new Schema({
+export const noteSchema = new Schema({
   // TODO fix type error, I'm thinking the @types package is out of date
   nodes: {
     doc: {

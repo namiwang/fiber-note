@@ -46,6 +46,18 @@ class NoteChannel < ApplicationCable::Channel
     broadcast_to note, { event: 'blocks_updated', requested_at: data['requested_at'] }
   end
 
+  # TODO move to block channel
+  def update_block data
+    note = Note.find data['note']['id']
+    block = note.blocks.find_by! id: data['note']['block']['id']
+
+    block_content = data['note']['block']['content']
+
+    block.update! content: block_content
+
+    broadcast_to note, { event: 'block_updated', requested_at: data['requested_at'] }
+  end
+
   private
 
   def find_or_initialize_note id
