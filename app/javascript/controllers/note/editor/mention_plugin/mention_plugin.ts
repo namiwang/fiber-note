@@ -141,12 +141,14 @@ export function getMentionsPlugin(
   var removeClassAtIndex = function(index, className) {
     var itemList = el.querySelector(".suggestion-item-list").childNodes;
     var prevItem = itemList[index];
+    // @ts-ignore TODO
     prevItem.classList.remove(className);
   };
 
   var addClassAtIndex = function(index, className) {
     var itemList = el.querySelector(".suggestion-item-list").childNodes;
     var prevItem = itemList[index];
+    // @ts-ignore TODO
     prevItem.classList.add(className);
   };
 
