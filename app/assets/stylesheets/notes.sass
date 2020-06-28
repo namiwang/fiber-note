@@ -10,6 +10,11 @@ ul#notes-nav
 
   // TODO maybe hide scroll bar
 
-.ProseMirror
-  &:focus
-    outline: none
+.note-editor, .block-editor
+  > .banner
+    position: fixed
+    right: 3em
+
+  > .ProseMirror
+      &:focus
+        outline: none

@@ -6,12 +6,11 @@ import Note from '../models/note'
 const DEBOUNCE_DURATION = 200
 
 export default class NoteController extends Controller {
-  static targets = ['editorHolder', 'loader', 'titleMerger']
+  static targets = ['loader', 'titleMerger']
 
   // https://github.com/stimulusjs/stimulus/search?q=targets+typescript&type=Issues
-  editorHolderTarget: Element
-  loaderTarget: Element
-  titleMergerTarget: Element
+  loaderTarget: HTMLElement
+  titleMergerTarget: HTMLElement
 
   private note: Note
   private editor: Editor
@@ -41,7 +40,7 @@ export default class NoteController extends Controller {
     this.editor = new Editor(
       this,
       nodeSchema,
-      this.editorHolderTarget,
+      this.element,
       JSON.parse(this.data.get('content')),
       JSON.parse(this.data.get('availableTags')),
     )
@@ -97,7 +96,9 @@ export default class NoteController extends Controller {
   }
 
   private refreshLoader() {
-    this.loaderTarget.innerHTML = (this.updatingTitle || this.updatingBlocks).toString()
+    let loading = this.updatingTitle || this.updatingBlocks
+    let visibility = loading ? 'visible' : 'hidden'
+    this.loaderTarget.style.visibility = visibility
   }
 
   private refreshTitleMerger() {
