@@ -1,9 +1,13 @@
 import consumer from "../channels/consumer"
 
+const DEBOUNCE_DURATION = 200
+
 export default class Note {
   private channel
 
   private latestUpdatingBlocksRequsetedAt: number
+
+  private updatingBlocksDebouncer: NodeJS.Timeout
 
   private updateTitleRequestController: AbortController
 
@@ -75,7 +79,18 @@ export default class Note {
     return response
   }
 
-  updateBlocks(blocks: JSON[]) {
+  public updateBlocksLater(blocks: JSON[]) {
+    if (this.updatingBlocksDebouncer) {
+      clearTimeout(this.updatingBlocksDebouncer)
+    }
+
+    this.updatingBlocksDebouncer = setTimeout(
+      () => { this.updateBlocks(blocks)},
+      DEBOUNCE_DURATION
+    )
+  }
+
+  private updateBlocks(blocks: JSON[]) {
     this.latestUpdatingBlocksRequsetedAt = Date.now()
     this.channel.perform('update_blocks', {
       note: {

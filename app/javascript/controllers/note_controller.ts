@@ -20,7 +20,6 @@ export default class NoteController extends Controller {
   private duplicatedTitle: string = null
 
   private updatingTitleDebouncer
-  private updatingBlocksDebouncer
 
   connect() {
     console.log('stimulus: note connected on:')
@@ -60,17 +59,6 @@ export default class NoteController extends Controller {
     )
   }
 
-  updateBlocksLater(blocks: JSON[]) {
-    if (this.updatingBlocksDebouncer) {
-      clearTimeout(this.updatingBlocksDebouncer)
-    }
-
-    this.updatingBlocksDebouncer = setTimeout(
-      () => { this.updateBlocks(blocks)},
-      DEBOUNCE_DURATION
-    )
-  }
-
   // TODO reform logic around updating title and handling duplicate title
   async updateTitle(newTitle: string) {
     this.duplicatedTitle = null
@@ -96,7 +84,7 @@ export default class NoteController extends Controller {
 
   async updateBlocks(blocks: JSON[]) {
     this.setUpdatingBlocks(true)
-    this.note.updateBlocks(blocks)
+    this.note.updateBlocksLater(blocks)
   }
 
   private handleBlocksUpdated() {
