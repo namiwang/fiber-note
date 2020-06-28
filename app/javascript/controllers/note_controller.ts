@@ -21,10 +21,7 @@ export default class NoteController extends Controller {
     console.log(this.element)
 
     this.note = new Note(
-      this.data.get('id'),
-      () => this.handleTitleUpdatedOk(),
-      (conflictedTitle) => this.handleTitleUpdatedConflict(conflictedTitle),
-      () => this.handleBlocksUpdated(),
+      this.data.get('id')
     )
 
     this.initEditor()
@@ -45,11 +42,16 @@ export default class NoteController extends Controller {
 
   public updateTitle(title: string) {
     this.setUpdatingTitle(true)
-    this.note.updateTitleLater(title)
+    this.note.updateTitleLater(
+      title,
+      () => this.handleTitleUpdatedOk(),
+      (conflictedTitle) => this.handleTitleUpdatedConflict(conflictedTitle),
+    )
   }
 
   private handleTitleUpdatedOk() {
     this.setUpdatingTitle(false)
+    this.refreshTitleMerger(null)
   }
 
   private handleTitleUpdatedConflict(conflictedTitle: string) {
@@ -59,7 +61,10 @@ export default class NoteController extends Controller {
 
   public updateBlocks(blocks: JSON[]) {
     this.setUpdatingBlocks(true)
-    this.note.updateBlocksLater(blocks)
+    this.note.updateBlocksLater(
+      blocks,
+      () => this.handleBlocksUpdated()
+    )
   }
 
   private handleBlocksUpdated() {
@@ -82,7 +87,7 @@ export default class NoteController extends Controller {
     this.loaderTarget.style.visibility = visibility
   }
 
-  private refreshTitleMerger(duplicatedTitle: string) {
+  private refreshTitleMerger(duplicatedTitle: string | null) {
     this.titleMergerTarget.innerHTML = duplicatedTitle ?
       `title conflict with: ${duplicatedTitle}` :
       ''

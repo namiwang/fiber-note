@@ -10,12 +10,12 @@ export default class Note {
   private updatingTitleDebouncer: number
   private updatingBlocksDebouncer: number
 
+  private onTitleUpdatedOk: () => void
+  private onTitleUpdatedConflict: (string) => void
+  private onBlocksUpdated: () => void
+
   constructor(
     private id: string,
-
-    private onTitleUpdatedOk: () => void,
-    private onTitleUpdatedConflict: (string) => void,
-    private onBlocksUpdated: () => void,
   ){
     this.initChannel()
   }
@@ -50,7 +50,14 @@ export default class Note {
     }
   }
 
-  public updateTitleLater(title: string) {
+  public updateTitleLater(
+    title: string,
+    updatedOkHandler,
+    updatedConflictHandler
+  ) {
+    this.onTitleUpdatedOk = updatedOkHandler
+    this.onTitleUpdatedConflict = updatedConflictHandler
+
     if (this.updatingTitleDebouncer) {
       clearTimeout(this.updatingTitleDebouncer)
     }
@@ -72,7 +79,12 @@ export default class Note {
     })
   }
 
-  public updateBlocksLater(blocks: JSON[]) {
+  public updateBlocksLater(
+    blocks: JSON[],
+    updatedHandler,
+  ) {
+    this.onBlocksUpdated = updatedHandler
+
     if (this.updatingBlocksDebouncer) {
       clearTimeout(this.updatingBlocksDebouncer)
     }
