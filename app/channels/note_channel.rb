@@ -1,14 +1,37 @@
 class NoteChannel < ApplicationCable::Channel
   def subscribed
-    stream_for Note.find_or_initialize_by(id: params[:note_id])
+    stream_for find_or_initialize_note params[:note_id]
   end
 
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
   end
 
+  def update_title data
+    note = find_or_initialize_note data['note']['id']
+
+    title = data['note']['title']
+
+    # the same note
+    if note.title == title
+      broadcast_to note, { event: 'title_updated_ok', requested_at: data['requested_at'] }
+      return
+    end
+
+    # duplicate title
+    # TODO PERFORMANCE
+    if  Note.where(title: title).exists? ||
+        Block.with_any_tags(title).exists?
+      broadcast_to note, { event: 'title_updated_conflict', conflicted_title: title, requested_at: data['requested_at'] }
+      return
+    end
+
+    note.update! title: title
+    broadcast_to note, { event: 'title_updated_ok', requested_at: data['requested_at'] }
+  end
+
   def update_blocks data
-    note = Note.find_or_initialize_by(id: data['note']['id'])
+    note = find_or_initialize_note data['note']['id']
 
     new_blocks = data['note']['blocks']
 
@@ -24,6 +47,10 @@ class NoteChannel < ApplicationCable::Channel
   end
 
   private
+
+  def find_or_initialize_note id
+    Note.find_or_initialize_by id: id
+  end
 
   def create_or_update_block! note, block_data
     id = block_data['attrs']['block_id']

@@ -5,20 +5,17 @@ const DEBOUNCE_DURATION = 200
 export default class Note {
   private channel
 
+  private latestUpdatingTitleRequsetedAt: number
   private latestUpdatingBlocksRequsetedAt: number
-
-  private updatingBlocksDebouncer: NodeJS.Timeout
-
-  private updateTitleRequestController: AbortController
+  private updatingTitleDebouncer: number
+  private updatingBlocksDebouncer: number
 
   constructor(
     private id: string,
 
-    private onBlocksUpdated: Function,
-
-    // title used in the last, or current request
-    // or the init value
-    private title: string,
+    private onTitleUpdatedOk: () => void,
+    private onTitleUpdatedConflict: (string) => void,
+    private onBlocksUpdated: () => void,
   ){
     this.initChannel()
   }
@@ -36,6 +33,14 @@ export default class Note {
 
   handleChannelData(data: object) {
     switch (data['event']) {
+      case 'title_updated_ok':
+        if (data['requested_at'] != this.latestUpdatingTitleRequsetedAt) { return }
+        this.onTitleUpdatedOk()
+        break;
+      case 'title_updated_conflict':
+        if (data['requested_at'] != this.latestUpdatingTitleRequsetedAt) { return }
+        this.onTitleUpdatedConflict(data['conflicted_title'])
+        break;
       case 'blocks_updated':
         if (data['requested_at'] != this.latestUpdatingBlocksRequsetedAt) { return }
         this.onBlocksUpdated()
@@ -45,38 +50,26 @@ export default class Note {
     }
   }
 
-  async request(path: string, signal: AbortSignal, body: object) {
-    return await fetch(path, {
-      signal: signal,
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')['content'],
-      },
-      body: JSON.stringify(body)
-    })
-  }
-
-  async updateTitle(newTitle: string) {
-    if (newTitle == this.title) { return }
-    this.title = newTitle
-
-    console.log(`note.updateTitle: ${newTitle}`)
-
-    this.updateTitleRequestController?.abort()
-    this.updateTitleRequestController = new AbortController
-
-    let response = await this.request(
-      `/notes/${this.id}/title`,
-      this.updateTitleRequestController.signal,
-      {note: {title: newTitle}}
-    )
-
-    if (response.ok) {
-      this.title = newTitle
+  public updateTitleLater(title: string) {
+    if (this.updatingTitleDebouncer) {
+      clearTimeout(this.updatingTitleDebouncer)
     }
 
-    return response
+    this.updatingTitleDebouncer = window.setTimeout(
+      () => { this.updateTitle(title) },
+      DEBOUNCE_DURATION
+    )
+  }
+
+  private updateTitle(title: string) {
+    this.latestUpdatingTitleRequsetedAt = Date.now()
+    this.channel.perform('update_title', {
+      note: {
+        id: this.id,
+        title: title
+      },
+      requested_at: this.latestUpdatingTitleRequsetedAt
+    })
   }
 
   public updateBlocksLater(blocks: JSON[]) {
@@ -84,8 +77,8 @@ export default class Note {
       clearTimeout(this.updatingBlocksDebouncer)
     }
 
-    this.updatingBlocksDebouncer = setTimeout(
-      () => { this.updateBlocks(blocks)},
+    this.updatingBlocksDebouncer = window.setTimeout(
+      () => { this.updateBlocks(blocks) },
       DEBOUNCE_DURATION
     )
   }

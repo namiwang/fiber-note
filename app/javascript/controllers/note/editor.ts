@@ -94,7 +94,7 @@ export default class Editor {
     console.log('notifying note_controller…')
     console.log(newState.doc.toJSON())
 
-    editor.noteController.updateTitleLater(title)
+    editor.noteController.updateTitle(title)
     editor.noteController.updateBlocks(blocks)
   }
 }

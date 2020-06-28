@@ -1,2 +1,0 @@
-module Notes::TitleHelper
-end

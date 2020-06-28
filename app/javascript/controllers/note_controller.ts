@@ -3,8 +3,6 @@ import { nodeSchema } from './note/editor/schemas'
 import Editor from './note/editor'
 import Note from '../models/note'
 
-const DEBOUNCE_DURATION = 200
-
 export default class NoteController extends Controller {
   static targets = ['loader', 'titleMerger']
 
@@ -14,11 +12,9 @@ export default class NoteController extends Controller {
 
   private note: Note
   private editor: Editor
+
   private updatingTitle: boolean = false
   private updatingBlocks: boolean = false
-  private duplicatedTitle: string = null
-
-  private updatingTitleDebouncer
 
   connect() {
     console.log('stimulus: note connected on:')
@@ -26,14 +22,14 @@ export default class NoteController extends Controller {
 
     this.note = new Note(
       this.data.get('id'),
+      () => this.handleTitleUpdatedOk(),
+      (conflictedTitle) => this.handleTitleUpdatedConflict(conflictedTitle),
       () => this.handleBlocksUpdated(),
-      this.data.get('title'),
     )
 
     this.initEditor()
 
-    // trigger the title merger
-    this.updateTitle(this.data.get('title'))
+    this.refreshLoader()
   }
 
   private initEditor() {
@@ -47,47 +43,32 @@ export default class NoteController extends Controller {
     this.editor.focusAtEnd()
   }
 
-  updateTitleLater(title: string) {
-    if (this.updatingTitleDebouncer) {
-      clearTimeout(this.updatingTitleDebouncer)
-    }
-
-    this.updatingTitleDebouncer = setTimeout(
-      () => { this.updateTitle(title)},
-      DEBOUNCE_DURATION
-    )
+  public updateTitle(title: string) {
+    this.setUpdatingTitle(true)
+    this.note.updateTitleLater(title)
   }
 
-  // TODO reform logic around updating title and handling duplicate title
-  async updateTitle(newTitle: string) {
-    this.duplicatedTitle = null
-    this.refreshTitleMerger()
-
-    this.updatingTitle = true
-    this.refreshLoader()
-
-    try {
-      let response = await this.note.updateTitle(newTitle)
-
-      if (response.statusText == 'Conflict') {
-        this.duplicatedTitle = newTitle
-        this.refreshTitleMerger()
-      }
-
-      // TODO handle regular failure
-    } catch (AbortError) {}
-
-    this.updatingTitle = false
-    this.refreshLoader()
+  private handleTitleUpdatedOk() {
+    this.setUpdatingTitle(false)
   }
 
-  async updateBlocks(blocks: JSON[]) {
+  private handleTitleUpdatedConflict(conflictedTitle: string) {
+    this.setUpdatingTitle(false)
+    this.refreshTitleMerger(conflictedTitle)
+  }
+
+  public updateBlocks(blocks: JSON[]) {
     this.setUpdatingBlocks(true)
     this.note.updateBlocksLater(blocks)
   }
 
   private handleBlocksUpdated() {
     this.setUpdatingBlocks(false)
+  }
+
+  private setUpdatingTitle(value: boolean) {
+    this.updatingTitle = value
+    this.refreshLoader()
   }
 
   private setUpdatingBlocks(value: boolean) {
@@ -101,8 +82,9 @@ export default class NoteController extends Controller {
     this.loaderTarget.style.visibility = visibility
   }
 
-  private refreshTitleMerger() {
-    this.titleMergerTarget.innerHTML = this.duplicatedTitle ? `conflict: ${this.duplicatedTitle}` : 'no conflict'
+  private refreshTitleMerger(duplicatedTitle: string) {
+    this.titleMergerTarget.innerHTML = duplicatedTitle ?
+      `title conflict with: ${duplicatedTitle}` :
+      ''
   }
-
 }
