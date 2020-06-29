@@ -3,8 +3,8 @@ import { EditorView } from "prosemirror-view"
 import { buildInputRules, buildKeymap } from "prosemirror-example-setup"
 import { keymap } from "prosemirror-keymap"
 import { baseKeymap } from "prosemirror-commands"
-import { dropCursor } from "prosemirror-dropcursor"
-import { gapCursor } from "prosemirror-gapcursor"
+// import { dropCursor } from "prosemirror-dropcursor"
+// import { gapCursor } from "prosemirror-gapcursor"
 import { history } from "prosemirror-history"
 
 import NoteController from "controllers/note_controller"
@@ -12,6 +12,7 @@ import { createBlockIdPlugin } from "./editor/block_id_plugin"
 import { getMentionsPlugin } from "./editor/mention_plugin/mention_plugin"
 
 import { noteSchema } from './editor/schemas'
+import { sinkListItem, liftListItem } from "prosemirror-schema-list"
 
 type SerializedContent = [string, JSON[]]
 
@@ -38,15 +39,24 @@ export default class NoteEditor {
         // before keymap plugin to override keydown handlers
         getMentionsPlugin(availableTags),
         buildInputRules(noteSchema),
-        // TODO keymap around enter -> new list item
-        // https://discuss.prosemirror.net/t/lists-paragraph-inside-li-instead-of-new-list-item/455
+
         // TODO keymap around tab and shift-tab
-        // TODO extract hints about available keys
+        keymap({'Tab': sinkListItem(noteSchema.nodes['list_item'])}),
+        keymap({'Shift-Tab': liftListItem(noteSchema.nodes['list_item'])}),
+
+        // this is some keymaps from example-setup
+        // TODO
+        // - cleanup useless key
+        // - extract hints about available keys
         // https://github.com/prosemirror/prosemirror-example-setup/blob/master/src/keymap.js
         keymap(buildKeymap(noteSchema)),
+
         keymap(baseKeymap),
-        dropCursor(),
-        gapCursor(),
+
+        // TODO
+        // dropCursor(),
+        // gapCursor(),
+
         history(),
         createBlockIdPlugin(),
       ]
