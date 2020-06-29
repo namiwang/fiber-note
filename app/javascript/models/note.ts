@@ -7,15 +7,12 @@ export default class Note {
 
   private latestUpdatingTitleRequsetedAt: number
   private latestUpdatingBlocksRequsetedAt: number
-  private latestUpdatingBlockRequsetedAt: number
   private updatingTitleDebouncer: number
   private updatingBlocksDebouncer: number
-  private updatingBlockDebouncer: number
 
   private onTitleUpdatedOk: () => void
   private onTitleUpdatedConflict: (string) => void
   private onBlocksUpdated: () => void
-  private onBlockUpdated: () => void
 
   constructor(
     private id: string,
@@ -47,10 +44,6 @@ export default class Note {
       case 'blocks_updated':
         if (data['requested_at'] != this.latestUpdatingBlocksRequsetedAt) { return }
         this.onBlocksUpdated()
-        break;
-      case 'block_updated':
-        if (data['requested_at'] != this.latestUpdatingBlockRequsetedAt) { return }
-        this.onBlockUpdated()
         break;
       default:
         break;
@@ -110,37 +103,6 @@ export default class Note {
         blocks: blocks
       },
       requested_at: this.latestUpdatingBlocksRequsetedAt
-    })
-  }
-
-  public updateBlockLater(
-    blockId: string,
-    block: JSON,
-    updatedHandler,
-  ) {
-    this.onBlockUpdated = updatedHandler
-
-    if (this.updatingBlockDebouncer) {
-      clearTimeout(this.updatingBlockDebouncer)
-    }
-
-    this.updatingBlockDebouncer = window.setTimeout(
-      () => { this.updateBlock(blockId, block) },
-      DEBOUNCE_DURATION
-    )
-  }
-
-  private updateBlock(blockId: string, block: JSON) {
-    this.latestUpdatingBlockRequsetedAt = Date.now()
-    this.channel.perform('update_block', {
-      note: {
-        id: this.id,
-        block: {
-          id: blockId,
-          content: block,
-        }
-      },
-      requested_at: this.latestUpdatingBlockRequsetedAt
     })
   }
 }

@@ -67,7 +67,7 @@ export default class BlockEditor {
     if (!transaction.docChanged) { return }
 
     let editor = <BlockEditor>this['editor']
-    let blockContent = <JSON>newState.doc.content.toJSON()
+    let blockContent = <JSON>newState.doc.content.toJSON()[0]
 
     console.log('notifying block_controller…')
     console.log(blockContent)

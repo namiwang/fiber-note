@@ -1,6 +1,6 @@
 import { Controller } from 'stimulus'
 import BlockEditor from './note/block_editor'
-import Note from '../models/note'
+import Block from '../models/block'
 
 export default class BlockController extends Controller {
   static targets = ['loader']
@@ -8,21 +8,17 @@ export default class BlockController extends Controller {
   // https://github.com/stimulusjs/stimulus/search?q=targets+typescript&type=Issues
   loaderTarget: HTMLElement
 
-  private id: string
-
-  private note: Note
+  private block: Block
   private editor: BlockEditor
 
-  private updatingBlock: boolean = false
+  private updating: boolean = false
 
   connect() {
     console.log('stimulus: block connected on:')
     console.log(this.element)
 
-    this.id = this.data.get('id')
-
-    this.note = new Note(
-      this.data.get('noteId')
+    this.block = new Block(
+      this.data.get('id')
     )
 
     this.initEditor()
@@ -39,26 +35,25 @@ export default class BlockController extends Controller {
     )
   }
 
-  public updateBlock(block: JSON) {
-    this.setUpdatingBlock(true)
-    this.note.updateBlockLater(
-      this.id,
-      block,
-      () => this.handleBlockUpdated()
+  public updateBlock(blockContent: JSON) {
+    this.setUpdating(true)
+    this.block.updateLater(
+      blockContent,
+      () => this.handleUpdated()
     )
   }
 
-  private handleBlockUpdated() {
-    this.setUpdatingBlock(false)
+  private handleUpdated() {
+    this.setUpdating(false)
   }
 
-  private setUpdatingBlock(value: boolean) {
-    this.updatingBlock = value
+  private setUpdating(value: boolean) {
+    this.updating = value
     this.refreshLoader()
   }
 
   private refreshLoader() {
-    let loading = this.updatingBlock
+    let loading = this.updating
     let visibility = loading ? 'visible' : 'hidden'
     this.loaderTarget.style.visibility = visibility
   }
