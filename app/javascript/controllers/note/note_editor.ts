@@ -13,6 +13,7 @@ import { getMentionsPlugin } from "./editor/mention_plugin/mention_plugin"
 
 import { noteSchema } from './editor/schemas'
 import { sinkListItem, liftListItem } from "prosemirror-schema-list"
+import { createFirstListItem } from "./editor/create_first_list_item"
 
 type SerializedContent = [string, JSON[]]
 
@@ -38,9 +39,11 @@ export default class NoteEditor {
       plugins: [
         // before keymap plugin to override keydown handlers
         getMentionsPlugin(availableTags),
-        buildInputRules(noteSchema),
 
-        // TODO keymap around tab and shift-tab
+        // hijack enter to create a top level list and first list item
+        keymap({'Enter': createFirstListItem}),
+
+        // keymap around tab and shift-tab
         keymap({'Tab': sinkListItem(noteSchema.nodes['list_item'])}),
         keymap({'Shift-Tab': liftListItem(noteSchema.nodes['list_item'])}),
 
@@ -53,11 +56,15 @@ export default class NoteEditor {
 
         keymap(baseKeymap),
 
+        // some input rules from example-setup
+        // buildInputRules(noteSchema),
+
         // TODO
         // dropCursor(),
         // gapCursor(),
 
         history(),
+
         createBlockIdPlugin(),
       ]
     })
