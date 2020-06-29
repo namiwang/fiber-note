@@ -15,45 +15,21 @@ export const createBlockIdPlugin = () => {
       if (transactions.some((transaction) => transaction.docChanged)) {
 
         // strip block-id from non-top-level blocks
-        nextState.doc.descendants((node, pos, parent) => {
-          if (parent == nextState.doc) {
-            // a top-level block
+        nextState.doc.descendants((node, pos, _parent) => {
+          if (
+            node.type.name == 'list_item' &&
+            !node.attrs["block_id"]
+          ) {
+            console.log('setting block_id for:')
+            console.log(node)
 
-            // add block-id as needed
-            if (
-              !(node.type.name == 'h1') &&
-              !node.attrs["block_id"]
-            ) {
-              // console.log('setting block_id for:')
-              // console.log(node)
-
-              transaction.setNodeMarkup(
-                pos,
-                undefined,
-                {...(node.attrs), ["block_id"]: uuid()}
-              )
-              modified = true
-            }
-
-          } else {
-            // not a top-level block
-
-            // strip block-id as needed
-            if (
-              node.attrs["block_id"]
-            ) {
-              // console.log('stripping block_id')
-
-              transaction.setNodeMarkup(
-                pos,
-                undefined,
-                {...(node.attrs), ["block_id"]: null}
-              )
-              modified = true
-            }
-
+            transaction.setNodeMarkup(
+              pos,
+              undefined,
+              {...(node.attrs), ["block_id"]: uuid()}
+            )
+            modified = true
           }
-
         })
       }
 
