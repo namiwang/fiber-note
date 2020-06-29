@@ -22,12 +22,25 @@ function BLOCK_TO_DOM_FUNC(tagName: string): (node: Node) => DOMOutputSpec {
 // base nodes https://github.com/prosemirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
 // list nodes https://github.com/prosemirror/prosemirror-schema-list/blob/master/src/schema-list.js
 const nodes = {
+  tag: tagNode,
+
+  hard_break: {
+    inline: true,
+    group: "inline",
+    selectable: false,
+    parseDOM: [{tag: "br"}],
+    toDOM() { return ["br"] },
+  },
+
+  text: {
+    group: "inline"
+  },
+
   paragraph: {
     content: "inline*",
     group: "block",
-    attrs: BLOCK_ID_ATTRS,
-    parseDOM: BLOCK_PARSE_DOM("p"),
-    toDOM: BLOCK_TO_DOM_FUNC("p"),
+    parseDOM: [{tag: "p"}],
+    toDOM() { return ["p", 0] }
   },
 
   h1: {
@@ -38,26 +51,6 @@ const nodes = {
     toDOM() { return ['h1', 0] },
   },
 
-  text: {
-    group: "inline"
-  },
-
-  hard_break: {
-    inline: true,
-    group: "inline",
-    selectable: false,
-    parseDOM: [{tag: "br"}],
-    toDOM() { return ["br"] },
-  },
-
-  bullet_list: {
-    content: "list_item+",
-    group: "block",
-    attrs: BLOCK_ID_ATTRS,
-    parseDOM: BLOCK_PARSE_DOM("ul"),
-    toDOM: BLOCK_TO_DOM_FUNC("ul"),
-  },
-
   list_item: {
     content: "paragraph block*",
     parseDOM: [{tag: "li"}],
@@ -65,7 +58,12 @@ const nodes = {
     defining: true
   },
 
-  tag: tagNode
+  bullet_list: {
+    content: "list_item+",
+    group: "block",
+    parseDOM: [{tag: "ul"}],
+    toDOM() { return ["ul", 0] },
+  },
 }
 
 export const noteSchema = new Schema({
@@ -74,17 +72,18 @@ export const noteSchema = new Schema({
     doc: {
       content: 'h1 block+',
     },
+    // @ts-ignore
+    tag: nodes.tag,
+    // @ts-ignore
+    hard_break: nodes.hard_break,
+    text: nodes.text,
+    // @ts-ignore
     paragraph: nodes.paragraph,
     // @ts-ignore
     h1: nodes.h1,
-    text: nodes.text,
-    // @ts-ignore
-    hard_break: nodes.hard_break,
     bullet_list: nodes.bullet_list,
     // @ts-ignore
     list_item: nodes.list_item,
-    // @ts-ignore
-    tag: nodes.tag,
   },
   marks: basicSchema.schema.spec.marks
 })
