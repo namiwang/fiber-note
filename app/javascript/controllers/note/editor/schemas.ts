@@ -3,20 +3,6 @@ import * as basicSchema from 'prosemirror-schema-basic'
 
 import { tagNode } from './mention_plugin/tag_node'
 
-const BLOCK_ID_ATTR = { default: '' }
-const BLOCK_ID_ATTRS = { block_id: BLOCK_ID_ATTR }
-function BLOCK_PARSE_DOM(tagName: string) {
-  return [{
-    tag: tagName,
-    getAttrs: (dom) => ({block_id: dom.getAttribute("data-block-id")})
-  }]
-}
-function BLOCK_TO_DOM_FUNC(tagName: string): (node: Node) => DOMOutputSpec {
-  return function(node) {
-    return [tagName, {"data-block-id": node.attrs.block_id}, 0]
-  }
-}
-
 // we extend the pre-defined nodes with a block_id attribute
 // spec https://prosemirror.net/docs/ref/#schema-basic
 // base nodes https://github.com/prosemirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
@@ -53,9 +39,15 @@ const nodes = {
 
   list_item: {
     content: "paragraph block*",
-    parseDOM: [{tag: "li"}],
-    toDOM() { return ["li", 0] },
-    defining: true
+    defining: true,
+    attrs: { block_id: { default: '' } },
+    parseDOM: [{
+      tag: "li",
+      getAttrs: (dom) => ({block_id: dom.getAttribute("data-block-id")})
+    }],
+    toDOM(node) {
+      return ["li", {"data-block-id": node.attrs.block_id}, 0]
+    }
   },
 
   bullet_list: {
@@ -81,6 +73,7 @@ export const noteSchema = new Schema({
     paragraph: nodes.paragraph,
     // @ts-ignore
     h1: nodes.h1,
+    // @ts-ignore
     bullet_list: nodes.bullet_list,
     // @ts-ignore
     list_item: nodes.list_item,
