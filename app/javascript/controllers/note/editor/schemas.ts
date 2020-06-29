@@ -24,21 +24,19 @@ const nodes = {
 
   paragraph: {
     content: "inline*",
-    group: "block",
     parseDOM: [{tag: "p"}],
     toDOM() { return ["p", 0] }
   },
 
   h1: {
-    content: 'inline*',
-    group: 'block',
+    content: "inline*",
     defining: true,
-    parseDOM: [{tag: 'h1'}],
-    toDOM() { return ['h1', 0] },
+    parseDOM: [{tag: "h1"}],
+    toDOM() { return ["h1", 0] },
   },
 
   list_item: {
-    content: "paragraph block*",
+    content: "paragraph bullet_list?",
     defining: true,
     attrs: { block_id: { default: '' } },
     parseDOM: [{
@@ -52,7 +50,6 @@ const nodes = {
 
   bullet_list: {
     content: "list_item+",
-    group: "block",
     parseDOM: [{tag: "ul"}],
     toDOM() { return ["ul", 0] },
   },
@@ -62,7 +59,7 @@ export const noteSchema = new Schema({
   // TODO fix type error, I'm thinking the @types package is out of date
   nodes: {
     doc: {
-      content: 'h1 block+',
+      content: 'h1 bullet_list',
     },
     // @ts-ignore
     tag: nodes.tag,
