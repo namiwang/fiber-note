@@ -7,7 +7,6 @@ import { noteSchema } from "./schemas"
 // especially `createParagraphNear`
 // https://github.com/ProseMirror/prosemirror-commands/blob/master/src/commands.js#L574
 
-
 export function createTopList(
   state: EditorState<any>,
   dispatch: (tr: Transaction<any>) => void,

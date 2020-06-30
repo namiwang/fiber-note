@@ -5,12 +5,12 @@
     note: {
       id: note.id,
       title: note.title,
-      content: note.content_json,
-      available_tags: @available_tags
+      content: note.to_doc.to_json,
+      available_tags: available_tags
     }
   }
 
 .note-editor.text-dark.p-3{data: note_data}
   .banner
     .loader.spinner-border.spinner-border-sm.text-secondary{data: {target: 'note.loader'}}
-    .title-merger{data: {target: 'note.titleMerger'}}
+    .title-merger{data: {target: 'note.titleMerger'}} title merger

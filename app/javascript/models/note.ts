@@ -10,8 +10,7 @@ export default class Note {
   private updatingTitleDebouncer: number
   private updatingBlocksDebouncer: number
 
-  private onTitleUpdatedOk: () => void
-  private onTitleUpdatedConflict: (string) => void
+  private onTitleUpdated: () => void
   private onBlocksUpdated: () => void
 
   constructor(
@@ -23,7 +22,7 @@ export default class Note {
   private initChannel() {
     this.channel = consumer.subscriptions.create({
       channel: 'NoteChannel',
-      note_id: this.id
+      id: this.id
     }, {
       connected() { console.log('noteChannel:connected') },
       disconnected() { console.log('noteChannel:disconnected') },
@@ -33,13 +32,9 @@ export default class Note {
 
   handleChannelData(data: object) {
     switch (data['event']) {
-      case 'title_updated_ok':
+      case 'title_updated':
         if (data['requested_at'] != this.latestUpdatingTitleRequsetedAt) { return }
-        this.onTitleUpdatedOk()
-        break;
-      case 'title_updated_conflict':
-        if (data['requested_at'] != this.latestUpdatingTitleRequsetedAt) { return }
-        this.onTitleUpdatedConflict(data['conflicted_title'])
+        this.onTitleUpdated()
         break;
       case 'blocks_updated':
         if (data['requested_at'] != this.latestUpdatingBlocksRequsetedAt) { return }
@@ -52,11 +47,9 @@ export default class Note {
 
   public updateTitleLater(
     title: string,
-    updatedOkHandler,
-    updatedConflictHandler
+    updatedHandler,
   ) {
-    this.onTitleUpdatedOk = updatedOkHandler
-    this.onTitleUpdatedConflict = updatedConflictHandler
+    this.onTitleUpdated = updatedHandler
 
     if (this.updatingTitleDebouncer) {
       clearTimeout(this.updatingTitleDebouncer)

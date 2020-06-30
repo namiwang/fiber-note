@@ -42,19 +42,12 @@ export default class NoteController extends Controller {
     this.setUpdatingTitle(true)
     this.note.updateTitleLater(
       title,
-      () => this.handleTitleUpdatedOk(),
-      (conflictedTitle) => this.handleTitleUpdatedConflict(conflictedTitle),
+      () => this.handleTitleUpdated(),
     )
   }
 
-  private handleTitleUpdatedOk() {
+  private handleTitleUpdated() {
     this.setUpdatingTitle(false)
-    this.refreshTitleMerger(null)
-  }
-
-  private handleTitleUpdatedConflict(conflictedTitle: string) {
-    this.setUpdatingTitle(false)
-    this.refreshTitleMerger(conflictedTitle)
   }
 
   public updateBlocks(blocks: JSON[]) {
@@ -83,11 +76,5 @@ export default class NoteController extends Controller {
     let loading = this.updatingTitle || this.updatingBlocks
     let visibility = loading ? 'visible' : 'hidden'
     this.loaderTarget.style.visibility = visibility
-  }
-
-  private refreshTitleMerger(duplicatedTitle: string | null) {
-    this.titleMergerTarget.innerHTML = duplicatedTitle ?
-      `title conflict with: ${duplicatedTitle}` :
-      ''
   }
 }
