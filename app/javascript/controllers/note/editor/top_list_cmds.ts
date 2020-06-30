@@ -8,7 +8,7 @@ import { noteSchema } from "./schemas"
 // https://github.com/ProseMirror/prosemirror-commands/blob/master/src/commands.js#L574
 
 
-export function createFirstListItem(
+export function createTopList(
   state: EditorState<any>,
   dispatch: (tr: Transaction<any>) => void,
   view: EditorView<any>
@@ -17,7 +17,9 @@ export function createFirstListItem(
     dispatch &&
 
     // if only a title
+    // @ts-ignore
     state.doc.content.content.length == 1 &&
+    // @ts-ignore
     state.doc.content.content[0].type.name == 'h1' && // TODO 'title' later
 
     // and selected nothing

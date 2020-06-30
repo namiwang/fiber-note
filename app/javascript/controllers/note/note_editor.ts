@@ -13,14 +13,20 @@ import { getMentionsPlugin } from "./editor/mention_plugin/mention_plugin"
 
 import { noteSchema } from './editor/schemas'
 import { sinkListItem, liftListItem } from "prosemirror-schema-list"
-import { createFirstListItem } from "./editor/create_first_list_item"
+import { createTopList } from "./editor/top_list_cmds"
 
 type SerializedContent = [string, JSON[]]
 
+// blocks: [{type: list_item, content: [{p}, {bullet_list}]}]
 function serializeDoc(doc): SerializedContent {
-  let blocks = doc.content.toJSON()
-  // @ts-ignore
-  let title = blocks.shift().content[0].text.trim()
+  let content = doc.content.toJSON()
+
+  let title = content.shift().content[0].text.trim()
+
+  if (content.length == 0) { return [title, []] }
+
+  let topList = content[0]
+  let blocks = topList.content
 
   return [title, blocks]
 }
@@ -41,7 +47,7 @@ export default class NoteEditor {
         getMentionsPlugin(availableTags),
 
         // hijack enter to create a top level list and first list item
-        keymap({'Enter': createFirstListItem}),
+        keymap({'Enter': createTopList}),
 
         // keymap around tab and shift-tab
         keymap({'Tab': sinkListItem(noteSchema.nodes['list_item'])}),
