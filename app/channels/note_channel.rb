@@ -1,6 +1,6 @@
 class NoteChannel < ApplicationCable::Channel
   def subscribed
-    stream_for find_or_create_note! params[:id]
+    stream_for find_or_init_note params[:id]
   end
 
   def unsubscribed
@@ -46,7 +46,13 @@ class NoteChannel < ApplicationCable::Channel
 
   private
 
-  # NOTE find_or_initialize may be faster yet it leads to concurrent issue
+  def find_or_init_note id
+    Block.find_by(id: id) || Block.new(
+      id: id,
+      is_note: true,
+    )
+  end
+
   def find_or_create_note! id
     Block.find_by(id: id) || Block.create!(
       id: id,
