@@ -120,31 +120,59 @@ class Block < ApplicationRecord
   #     tmp_tags
   #   end
 
-  def to_doc
-    paragraph_or_title = if is_note
-      if title
-        {
-          type: 'h1',
-          content: [
-            {
-              type: 'text',
-              text: title
-            }
-          ]
-        }
-      else
-        {
-          type: 'h1',
-          content: []
-        }
-      end
+  # node as in fragment for editor, without the `doc` wrapper, like
+  # {type: paragraph, content: [{type: text, content: 'foo'}]}
+  # 
+  # TODO move rendering related to helper/decorator/components
+  # 
+  def to_list_item_node
+    content = [paragraph]
+
+    if !child_blocks.empty?
+      content << {
+        type: 'bullet_list',
+        content: child_blocks.map(&:to_list_item_node)
+      }
+    end
+
+    doc = {
+      type: 'list_item',
+      content: content
+    }
+
+    doc
+  end
+
+  def to_note_doc
+    title_node = if title
+      {
+        type: 'h1',
+        content: [
+          {
+            type: 'text',
+            text: title
+          }
+        ]
+      }
     else
-      paragraph
+      {
+        type: 'h1',
+        content: []
+      }
+    end
+
+    content = [title_node]
+
+    if !child_blocks.empty?
+      content << {
+        type: 'bullet_list',
+        content: child_blocks.map(&:to_list_item_node)
+      }
     end
 
     doc = {
       type: 'doc',
-      content: [paragraph_or_title] + child_blocks.map(&:to_doc)
+      content: content
     }
 
     doc
