@@ -55,8 +55,9 @@ export function createTopList(
 // 
 // this is a forked hijack to fix that
 // 
+// https://discuss.prosemirror.net/t/confused-about-typesafter-in-split-and-how-to-disable-attrs-inheriting/2952
 // https://github.com/prosemirror/prosemirror-schema-list/blob/master/src/schema-list.js
-// 
+//
 // :: (NodeType) → (state: EditorState, dispatch: ?(tr: Transaction)) → bool
 // Build a command that splits a non-empty textblock at the top level
 // of a list item by also splitting that list item.
@@ -90,6 +91,23 @@ export function splitListItemAndStripAttrs(itemType) {
     let tr = state.tr.delete($from.pos, $to.pos)
     let types = nextType && [null, {type: nextType}]
     if (!canSplit(tr.doc, $from.pos, 2, types)) return false
+
+    // HACK
+    // 
+    // NOTE
+    // I dont know why, dont ask
+    // I tried to *do the right thing* to modify this `types` before `canSplit`,
+    // yet changing it caused `canSplit` to return false
+    // spent a day digging into the code,
+    // `validContent`, `matchFragment`, eventually `matchType`
+    // in the original version, the parameter in `matchType` is a `text`,
+    // yet in the hijacked one, it's a `list_item`
+    // 
+    // stopped debugging, made a patch here, and it worked
+    // 
+    types[0] = {type: itemType}
+    types[0]['attrs'] = {block_id: ''}
+
     if (dispatch) dispatch(tr.split($from.pos, 2, types).scrollIntoView())
     return true
   }

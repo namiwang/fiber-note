@@ -14,7 +14,6 @@ export const createBlockIdPlugin = () => {
       let modified = false
       if (transactions.some((transaction) => transaction.docChanged)) {
 
-        // strip block-id from non-top-level blocks
         nextState.doc.descendants((node, pos, _parent) => {
           if (
             node.type.name == 'list_item' &&
