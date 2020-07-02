@@ -1,3 +1,5 @@
+-# TODO current tag and active
+
 %ul#notes-nav.col-md-2.list-group.list-group-flush.overflow-auto
   -# .list-group-item
   -#   .input-group.my-3
@@ -6,14 +8,13 @@
   -#       %span.input-group-text icon
 
   -# TODO icon
-  - active = controller_name == 'notes' && action_name == 'new'
-  %a.list-group-item.list-group-item-secondary{href: new_note_path, class: ( 'active' if active )}
+  %a.list-group-item.list-group-item-secondary{href: new_note_path}
     new
 
   - @notes.each do |note|
-    - active = note == @note
-    %a.list-group-item.list-group-item-secondary{href: edit_note_path(note), class: ( 'active' if active )}
+    %a.list-group-item.list-group-item-secondary{href: edit_note_path(note)}
       = note.title
+
   - @no_note_tags.each do |tag|
     %a.list-group-item.list-group-item-secondary{href: new_note_from_tag_path(tag)}
       = tag

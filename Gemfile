@@ -61,3 +61,5 @@ end
 gem 'hamlit-rails'
 
 gem "acts-as-taggable-array-on"
+
+gem 'view_component'
