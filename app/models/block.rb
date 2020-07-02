@@ -31,6 +31,9 @@ class Block < ApplicationRecord
 
   taggable_array :tags
 
+  after_update :parse_tags!
+  after_update :clear_dangling_blocks! # TODO async
+
   scope :notes, -> { where(is_note: true) }
 
   # recursively create all nested blocks
@@ -84,41 +87,45 @@ class Block < ApplicationRecord
     child_blocks.each(&:destroy!)
   end
 
-  #   # `dangling blocks` i.e. not in ordered_block_ids
-  #   def clear_dangling_blocks!
-  #     # TODO NOTE is this an active record issue?
-  #     # @note.blocks.where.not(id: ordered_block_ids).destroy_all
-  #     # `.blocks.where.not(id: ids)` is empty, if the there're no ordered
-  #     # ids in the `ids` list
-  #     # actually,
-  #     # `Block.where(note: @note).where.not(id: ids)` is always empty as well,
-  #     # yet `Block.where(note: @note).where(id: ids)` is fine
-  #     blocks.find_each do |b|
-  #       b.destroy unless ordered_block_ids.include?(b.id)
-  #     end
-  #   end
+  # `dangling blocks` i.e. blocks not in child_block_ids anymore
+  def clear_dangling_blocks!
+    # TODO PERFORMANCE
+    # optimize via sql
+    # 
+    # NOTE is this an active record issue?
+    # 
+    # > @note.blocks.where.not(id: child_block_ids).destroy_all
+    # does not work
 
-  #   # TODO failing when updating single block
-  #   def parse_tags
-  #     tmp_tags = []
-  # 
-  #     parse_tags_from_node self.content, tmp_tags
-  # 
-  #     update_column :tags, tmp_tags.compact.uniq
-  #   end
-  # 
-  #   def parse_tags_from_node node, tmp_tags
-  #     case
-  #     when node['type'] == 'tag'
-  #       tmp_tags << node['attrs']['tag']
-  #     when nodes = node['content']
-  #       nodes.each do |sub_node|
-  #         parse_tags_from_node sub_node, tmp_tags
-  #       end
-  #     end
-  # 
-  #     tmp_tags
-  #   end
+    # NOTE not using #child_blocks, to not wasting performance for ordering
+    Block.where(parent: self).find_each do |b|
+      unless child_block_ids.include? b.id
+        b.destroy!
+      end
+    end
+  end
+
+  def parse_tags!
+    tmp_tags = []
+
+    parse_tags_from_node self.paragraph, tmp_tags
+
+    update_column :tags, tmp_tags.compact.uniq
+  end
+
+  # recursively
+  def parse_tags_from_node node, tmp_tags
+    case
+    when node['type'] == 'tag'
+      tmp_tags << node['attrs']['tag']
+    when nodes = node['paragraph']
+      nodes.each do |sub_node|
+        parse_tags_from_node sub_node, tmp_tags
+      end
+    end
+
+    tmp_tags
+  end
 
   # node as in fragment for editor, without the `doc` wrapper, like
   # {type: paragraph, content: [{type: text, content: 'foo'}]}
