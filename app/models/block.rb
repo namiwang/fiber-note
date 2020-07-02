@@ -27,6 +27,8 @@
 class Block < ApplicationRecord
   belongs_to :parent, class_name: 'Block', optional: true
 
+  before_destroy :destroy_descendants! # expect to destroy recursively
+
   taggable_array :tags
 
   scope :notes, -> { where(is_note: true) }
@@ -76,6 +78,10 @@ class Block < ApplicationRecord
     # https://stackoverflow.com/questions/866465/order-by-the-in-value-list
     # 
     child_block_ids.map(&Block.method(:find))
+  end
+
+  def destroy_descendants!
+    child_blocks.each(&:destroy!)
   end
 
   #   # `dangling blocks` i.e. not in ordered_block_ids
