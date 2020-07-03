@@ -1,12 +1,11 @@
--# locals: note
 :ruby
   note_data = {
     controller: 'note',
     note: {
-      id: note.id,
-      title: note.title,
-      content: note.to_note_doc.to_json,
-      available_tags: available_tags
+      id: @note.id,
+      title: @note.title,
+      content: @note.to_note_doc.to_json,
+      available_tags: [] # TODO available_tags
     }
   }
 

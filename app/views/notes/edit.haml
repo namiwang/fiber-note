@@ -1,6 +1,6 @@
 = render Notes::NavComponent.new(notes: @notes, no_note_tags: @no_note_tags)
 
 .col-md-8.bg-light
-  = render partial: 'note_editor', locals: {note: @note}
+  = render Notes::EditorComponent.new(@note)
   -# #linked-blocks
   -#   = render partial: 'block_editor', collection: @linked_blocks, as: :block
