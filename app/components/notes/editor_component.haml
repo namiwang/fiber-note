@@ -4,7 +4,7 @@
     note: {
       id: @note.id,
       title: @note.title,
-      content: @note.to_note_doc.to_json,
+      content: BlockSerializer.new(@note).as_note_doc.to_json,
       available_tags: [] # TODO available_tags
     }
   }
