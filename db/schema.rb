@@ -21,15 +21,13 @@ ActiveRecord::Schema.define(version: 2020_06_30_024342) do
     t.string "tags", default: [], null: false, array: true
     t.uuid "parent_id"
     t.uuid "child_block_ids", default: [], null: false, array: true
-    t.boolean "is_note", default: false, null: false
     t.string "title"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["child_block_ids"], name: "index_blocks_on_child_block_ids", using: :gin
-    t.index ["is_note"], name: "index_blocks_on_is_note"
     t.index ["parent_id"], name: "index_blocks_on_parent_id"
     t.index ["tags"], name: "index_blocks_on_tags", using: :gin
-    t.index ["title"], name: "index_blocks_on_title"
+    t.index ["title"], name: "index_blocks_on_title", unique: true
   end
 
   add_foreign_key "blocks", "blocks", column: "parent_id"

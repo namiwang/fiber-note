@@ -1,24 +1,27 @@
 class NoteChannel < ApplicationCable::Channel
   def subscribed
-    stream_for find_or_init_note params[:id]
+    @note = Block.notes.find_or_initialize_by id: params[:id]
+
+    stream_for @note
   end
 
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
   end
 
+  # TODO
+  # - update existing tags
+  # 
   # data:
   #   note:
   #     id
   #     title
   def update_title data
-    note = find_or_create_note! data['note']['id']
-
     title = data['note']['title']
 
-    note.update! title: title
+    @note.update! title: title
 
-    broadcast_to note, { event: 'title_updated', requested_at: data['requested_at'] }
+    broadcast_to @note, { event: 'title_updated', requested_at: data['requested_at'] }
 
     # TODO another note with duplicate title
   end
@@ -31,33 +34,14 @@ class NoteChannel < ApplicationCable::Channel
   #         
   #       ]
   def update_blocks data
-    note = find_or_create_note! data['note']['id']
-
     child_blocks = data['note']['blocks']
 
     child_blocks.each do |block|
-      Block.create_or_update_from_doc! block, note
+      Block.create_or_update_from_doc! block, @note
     end
 
-    note.update! child_block_ids: child_blocks.map{|b| b['attrs']['block_id'] }
+    @note.update! child_block_ids: child_blocks.map{|b| b['attrs']['block_id'] }
 
-    broadcast_to note, { event: 'blocks_updated', requested_at: data['requested_at'] }
+    broadcast_to @note, { event: 'blocks_updated', requested_at: data['requested_at'] }
   end
-
-  private
-
-  def find_or_init_note id
-    Block.find_by(id: id) || Block.new(
-      id: id,
-      is_note: true,
-    )
-  end
-
-  def find_or_create_note! id
-    Block.find_by(id: id) || Block.create!(
-      id: id,
-      is_note: true,
-    )
-  end
-
 end

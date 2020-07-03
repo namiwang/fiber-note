@@ -1,31 +1,11 @@
 class NotesController < ApplicationController
-  before_action :list_notes_for_nav, only: [:new, :edit]
+  def show
+    @note = Block.notes.find_by(title: params[:title]) ||
+      Block.new(
+        id: SecureRandom.uuid,
+        title: params[:title]
+      )
 
-  def new
-    @note = Block.notes.new(
-      id: SecureRandom.uuid,
-      is_note: true,
-      title: params[:title]
-    )
-
-    # @linked_blocks = if @note.title.blank?
-    #   []
-    # else
-    #   Block.with_any_tags(@note.title)
-    # end
-
-    render :edit
-  end
-
-  def edit
-    @note = Block.notes.find params[:id]
-    # @linked_blocks = Block.with_any_tags(@note.title)
-  end
-
-  # private
-
-  def list_notes_for_nav
-    @notes = Block.notes
-    @no_note_tags = Block.all_tags - Block.notes.pluck(:title)
+    @notes = (Block.all_tags + Block.notes.pluck(:title)).uniq
   end
 end

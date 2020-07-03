@@ -8,13 +8,9 @@
   -#       %span.input-group-text icon
 
   -# TODO icon
-  %a.list-group-item.list-group-item-secondary{href: new_note_path}
+  %a.list-group-item.list-group-item-secondary{href: note_path}
     new
 
   - @notes.each do |note|
-    %a.list-group-item.list-group-item-secondary{href: edit_note_path(note)}
-      = note.title
-
-  - @no_note_tags.each do |tag|
-    %a.list-group-item.list-group-item-secondary{href: new_note_path(title: tag)}
-      = tag
+    %a.list-group-item.list-group-item-secondary{href: note_path(title: note)}
+      = note
