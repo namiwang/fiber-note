@@ -16,5 +16,5 @@
       = note.title
 
   - @no_note_tags.each do |tag|
-    %a.list-group-item.list-group-item-secondary{href: new_note_from_tag_path(tag)}
+    %a.list-group-item.list-group-item-secondary{href: new_note_path(title: tag)}
       = tag

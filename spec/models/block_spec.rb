@@ -6,7 +6,7 @@
 #  child_block_ids :uuid             default([]), not null, is an Array
 #  is_note         :boolean          default(FALSE), not null
 #  paragraph       :jsonb            not null
-#  tags            :uuid             default([]), not null, is an Array
+#  tags            :string           default([]), not null, is an Array
 #  title           :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null

@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 2020_06_30_024342) do
 
   create_table "blocks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.jsonb "paragraph", default: {}, null: false
-    t.uuid "tags", default: [], null: false, array: true
+    t.string "tags", default: [], null: false, array: true
     t.uuid "parent_id"
     t.uuid "child_block_ids", default: [], null: false, array: true
     t.boolean "is_note", default: false, null: false

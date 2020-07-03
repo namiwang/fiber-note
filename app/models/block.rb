@@ -6,7 +6,7 @@
 #  child_block_ids :uuid             default([]), not null, is an Array
 #  is_note         :boolean          default(FALSE), not null
 #  paragraph       :jsonb            not null
-#  tags            :uuid             default([]), not null, is an Array
+#  tags            :string           default([]), not null, is an Array
 #  title           :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
@@ -29,10 +29,23 @@ class Block < ApplicationRecord
 
   before_destroy :destroy_descendants! # expect to destroy recursively
 
+  # TODO
+  # - async
+  # - service
+  # - if changed
+  after_save :clear_dangling_blocks!
+
+  # 
+  # tags
+  # 
+
   taggable_array :tags
 
-  after_update :parse_tags!
-  after_update :clear_dangling_blocks! # TODO async
+  after_save :parse_tags!, if: :saved_change_to_paragraph?
+
+  def parse_tags!
+    Blocks::ParseTagsService.new(self).perform!
+  end
 
   scope :notes, -> { where(is_note: true) }
 
@@ -103,28 +116,6 @@ class Block < ApplicationRecord
         b.destroy!
       end
     end
-  end
-
-  def parse_tags!
-    tmp_tags = []
-
-    parse_tags_from_node self.paragraph, tmp_tags
-
-    update_column :tags, tmp_tags.compact.uniq
-  end
-
-  # recursively
-  def parse_tags_from_node node, tmp_tags
-    case
-    when node['type'] == 'tag'
-      tmp_tags << node['attrs']['tag']
-    when nodes = node['paragraph']
-      nodes.each do |sub_node|
-        parse_tags_from_node sub_node, tmp_tags
-      end
-    end
-
-    tmp_tags
   end
 
   # node as in fragment for editor, without the `doc` wrapper, like

@@ -14,7 +14,7 @@ class NetworkController < ApplicationController
     no_note_tags = Block.all_tags - Note.pluck(:title)
     no_note_tags.each do |tag|
       @graph_nodes << { data: {
-        id: tag, href: new_note_from_tag_path(tag)
+        id: tag, href: new_note_path(title: tag)
       } }
     end
 

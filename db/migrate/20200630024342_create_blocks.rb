@@ -2,7 +2,7 @@ class CreateBlocks < ActiveRecord::Migration[6.0]
   def change
     create_table :blocks, id: :uuid do |t|
       t.jsonb :paragraph, null: false, default: {}
-      t.uuid :tags, null: false, array: true, default: [], index: {using: :gin}
+      t.string :tags, null: false, array: true, default: [], index: {using: :gin}
 
       # associations
       t.references :parent, type: :uuid, null: true, foreign_key: {to_table: :blocks}
