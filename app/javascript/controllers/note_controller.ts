@@ -20,7 +20,8 @@ export default class NoteController extends Controller {
     console.log(this.element)
 
     this.note = new Note(
-      this.data.get('id')
+      this.data.get('id'),
+      this.data.get('title')
     )
 
     this.initEditor()

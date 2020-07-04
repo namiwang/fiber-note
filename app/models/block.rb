@@ -66,11 +66,13 @@ class Block < ApplicationRecord
   # update notes/nav_channel
   # 
 
-  # TODO BUG HACK
-  # I dont now why but using `:refresh_notes_nav` instead of `:refresh_notes_nav` wont trigger
+  # NOTE
+  # can't just use two consecutive callbacks to trigger the same method,
+  # so have to use -> { lambdas }
+  # https://github.com/rails/rails/issues/19590
   after_save -> { refresh_notes_nav }, if: :saved_change_to_title? # this covers creating and updating, and notes only
   after_save -> { refresh_notes_nav }, if: :saved_change_to_tags?
-  after_destroy :refresh_notes_nav, if: :is_note?
+  # TODO after_destroy, if: :is_note?
 
   def refresh_notes_nav
     ActionCable.server.broadcast(
@@ -90,8 +92,13 @@ class Block < ApplicationRecord
 
   scope :notes, -> { where.not(title: nil) }
 
+  # TODO
+  # DEPRECATION WARNING:
+  # Class level methods will no longer inherit scoping from `create` in Rails 6.1.
+  # To continue using the scoped relation, pass it into the block directly.
+  # To instead access the full set of models, as Rails 6.1 will, use `Block.default_scoped`.
   def self.available_tags
-    @notes = (all_tags + notes.pluck(:title)).uniq
+    (all_tags + notes.pluck(:title)).uniq
   end
 
   def is_note?
@@ -134,6 +141,7 @@ class Block < ApplicationRecord
     block
   end
 
+  # TODO make it a service
   # `dangling blocks` i.e. blocks not in child_block_ids anymore
   def clear_dangling_blocks!
     # TODO PERFORMANCE

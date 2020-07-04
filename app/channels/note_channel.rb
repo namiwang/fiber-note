@@ -1,7 +1,10 @@
 class NoteChannel < ApplicationCable::Channel
   def subscribed
     # initialize is not enough due to concurrent racing
-    @note = Block.notes.find_or_create_by id: params[:id]
+    @note = Block.notes.find_or_create_by(
+      id: params[:id],
+      title: params[:title]
+    )
 
     stream_for @note
   end

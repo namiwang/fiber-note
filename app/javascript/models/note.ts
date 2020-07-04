@@ -15,14 +15,16 @@ export default class Note {
 
   constructor(
     private id: string,
+    startingTitle: string,
   ){
-    this.initChannel()
+    this.initChannel(startingTitle)
   }
 
-  private initChannel() {
+  private initChannel(startingTitle: string) {
     this.channel = consumer.subscriptions.create({
       channel: 'NoteChannel',
-      id: this.id
+      id: this.id,
+      title: startingTitle
     }, {
       connected() { console.log('noteChannel:connected') },
       disconnected() { console.log('noteChannel:disconnected') },
