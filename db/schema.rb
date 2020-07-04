@@ -20,15 +20,18 @@ ActiveRecord::Schema.define(version: 2020_06_30_024342) do
     t.jsonb "paragraph", default: {}, null: false
     t.string "tags", default: [], null: false, array: true
     t.uuid "parent_id"
+    t.uuid "root_note_id"
     t.uuid "child_block_ids", default: [], null: false, array: true
     t.string "title"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["child_block_ids"], name: "index_blocks_on_child_block_ids", using: :gin
     t.index ["parent_id"], name: "index_blocks_on_parent_id"
+    t.index ["root_note_id"], name: "index_blocks_on_root_note_id"
     t.index ["tags"], name: "index_blocks_on_tags", using: :gin
     t.index ["title"], name: "index_blocks_on_title", unique: true
   end
 
   add_foreign_key "blocks", "blocks", column: "parent_id"
+  add_foreign_key "blocks", "blocks", column: "root_note_id"
 end

@@ -6,6 +6,7 @@ class CreateBlocks < ActiveRecord::Migration[6.0]
 
       # associations
       t.references :parent, type: :uuid, null: true, foreign_key: {to_table: :blocks}
+      t.references :root_note, type: :uuid, null: true, foreign_key: {to_table: :blocks}
       t.uuid :child_block_ids, null: false, array: true, default: [], index: {using: :gin}
 
       # note

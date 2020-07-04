@@ -9,13 +9,13 @@ class NetworkController < ApplicationController
     end
 
     @edges = []
-    # Block.find_each do |block|
-    #   block.tags.each do |tag|
-    #     @edges << { data: {
-    #       source: block.root_note.title,
-    #       target: tag
-    #     } }
-    #   end
-    # end
+    Block.find_each do |block|
+      block.tags.each do |tag|
+        @edges << { data: {
+          source: block.root_note.title,
+          target: tag
+        } }
+      end
+    end
   end
 end

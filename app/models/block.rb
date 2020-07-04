@@ -10,23 +10,27 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  parent_id       :uuid
+#  root_note_id    :uuid
 #
 # Indexes
 #
 #  index_blocks_on_child_block_ids  (child_block_ids) USING gin
 #  index_blocks_on_parent_id        (parent_id)
+#  index_blocks_on_root_note_id     (root_note_id)
 #  index_blocks_on_tags             (tags) USING gin
 #  index_blocks_on_title            (title) UNIQUE
 #
 # Foreign Keys
 #
 #  fk_rails_...  (parent_id => blocks.id)
+#  fk_rails_...  (root_note_id => blocks.id)
 #
 class Block < ApplicationRecord
   # 
   # associations
   # 
   belongs_to :parent, class_name: 'Block', optional: true
+  belongs_to :root_note, class_name: 'Block', optional: true
 
   before_destroy :destroy_descendants! # expect to destroy recursively
 
@@ -103,42 +107,6 @@ class Block < ApplicationRecord
 
   def is_note?
     !title.blank?
-  end
-
-  # recursively create all nested blocks
-  # 
-  # doc: 
-  #   {"type"=>"list_item",
-  #     "attrs"=>{"block_id"=>"b4989f1a-fcd3-4d83-9b81-c38dace4f617"},
-  #     "content"=>
-  #      [{"type"=>"paragraph", "content"=>[{"type"=>"text", "text"=>"a"}]},
-  #       {"type"=>"bullet_list",
-  #        "content"=>
-  #         [{"type"=>"list_item",
-  #           "attrs"=>{"block_id"=>"b4989f1a-fcd3-4d83-9b81-c38dace4f617"},
-  #           "content"=>
-  #            [{"type"=>"paragraph",
-  #              "content"=>[{"type"=>"text", "text"=>"b"}]}]}]}]}]},
-  def self.create_or_update_from_doc! doc, parent
-    id = doc['attrs']['block_id']
-    block = Block.find_or_initialize_by id: id
-
-    block.parent = parent
-    block.paragraph = doc['content'].first
-
-    child_block_ids = []
-    if nesting_list = doc['content'].second
-      child_blocks = nesting_list['content']
-      child_blocks.each do |child_block_doc|
-        child_block = Block.create_or_update_from_doc! child_block_doc, block
-        child_block_ids << child_block.id
-      end
-    end
-
-    block.child_block_ids = child_block_ids
-
-    block.save!
-    block
   end
 
   # TODO make it a service
