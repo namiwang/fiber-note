@@ -1,7 +1,6 @@
 import { Controller } from 'stimulus'
 
 import cytoscape from 'cytoscape'
-import { nodes } from 'prosemirror-schema-basic'
 
 export default class extends Controller {
   static targets = ['graph']
