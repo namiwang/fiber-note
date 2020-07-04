@@ -8,9 +8,7 @@ class Blocks::ParseTagsService
 
     parse_tags_from_node @block.paragraph, tmp_tags
 
-    # TODO
-    # - use update! to trigger callbacks, and use callback to notify nav channel
-    @block.update_column :tags, tmp_tags.compact.uniq
+    @block.update! tags: tmp_tags.compact.uniq
   end
 
   private

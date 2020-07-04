@@ -1,6 +1,6 @@
 -# TODO current tag and active
 
-%ul#notes-nav.col-md-2.list-group.list-group-flush.overflow-auto
+%ul#notes-nav.col-md-2.list-group.list-group-flush.overflow-auto{data: {controller: 'notes--nav'}}
   -# .list-group-item
   -#   .input-group.my-3
   -#     %input.form-control{type: 'text'}
@@ -11,6 +11,6 @@
   %a.list-group-item.list-group-item-secondary{href: note_path}
     new
 
-  - @notes.each do |note|
-    %a.list-group-item.list-group-item-secondary{href: note_path(title: note)}
-      = note
+  - @available_tags.each do |tag|
+    %a.list-group-item.list-group-item-secondary{href: note_path(title: tag)}
+      = tag

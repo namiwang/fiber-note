@@ -1,12 +1,14 @@
 class NoteChannel < ApplicationCable::Channel
   def subscribed
-    @note = Block.notes.find_or_initialize_by id: params[:id]
+    # initialize is not enough due to concurrent racing
+    @note = Block.notes.find_or_create_by id: params[:id]
 
     stream_for @note
   end
 
   def unsubscribed
-    # Any cleanup needed when channel is unsubscribed
+    # destroy if untouched
+    @note.destroy! if @note.title.blank?
   end
 
   # TODO

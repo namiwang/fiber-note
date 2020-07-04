@@ -1,5 +1,5 @@
 class Notes::NavComponent < ViewComponent::Base
-  def initialize notes:
-    @notes = notes
+  def initialize
+    @available_tags = Block.available_tags
   end
 end

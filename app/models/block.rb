@@ -23,15 +23,32 @@
 #  fk_rails_...  (parent_id => blocks.id)
 #
 class Block < ApplicationRecord
+  # 
+  # associations
+  # 
   belongs_to :parent, class_name: 'Block', optional: true
 
   before_destroy :destroy_descendants! # expect to destroy recursively
 
+  def child_blocks
+    # TODO PERFORMANCE
+    # 
+    # blocks = Block.where(id: ordered_block_ids).map(&:content)
+    # NOTE
+    # simply `Block.where(id: ordered_block_ids)` will NOT preserve the order of id
+    # https://stackoverflow.com/questions/866465/order-by-the-in-value-list
+    # 
+    child_block_ids.map(&Block.method(:find))
+  end
+
+  def destroy_descendants!
+    child_blocks.each(&:destroy!)
+  end
+
   # TODO
   # - async
   # - service
-  # - if changed
-  after_save :clear_dangling_blocks!
+  after_save :clear_dangling_blocks!, if: :saved_change_to_child_block_ids?
 
   # 
   # tags
@@ -45,7 +62,41 @@ class Block < ApplicationRecord
     Blocks::ParseTagsService.new(self).perform!
   end
 
+  # 
+  # update notes/nav_channel
+  # 
+
+  # TODO BUG HACK
+  # I dont now why but using `:refresh_notes_nav` instead of `:refresh_notes_nav` wont trigger
+  after_save -> { refresh_notes_nav }, if: :saved_change_to_title? # this covers creating and updating, and notes only
+  after_save -> { refresh_notes_nav }, if: :saved_change_to_tags?
+  after_destroy :refresh_notes_nav, if: :is_note?
+
+  def refresh_notes_nav
+    ActionCable.server.broadcast(
+      'notes/nav_channel',
+      {
+        event: 'tags_updated',
+        partial: ApplicationController.renderer.render(
+          Notes::NavComponent.new
+        )
+      }
+    )
+  end
+
+  # 
+  # notes
+  # 
+
   scope :notes, -> { where.not(title: nil) }
+
+  def self.available_tags
+    @notes = (all_tags + notes.pluck(:title)).uniq
+  end
+
+  def is_note?
+    !title.blank?
+  end
 
   # recursively create all nested blocks
   # 
@@ -81,21 +132,6 @@ class Block < ApplicationRecord
 
     block.save!
     block
-  end
-
-  def child_blocks
-    # TODO PERFORMANCE
-    # 
-    # blocks = Block.where(id: ordered_block_ids).map(&:content)
-    # NOTE
-    # simply `Block.where(id: ordered_block_ids)` will NOT preserve the order of id
-    # https://stackoverflow.com/questions/866465/order-by-the-in-value-list
-    # 
-    child_block_ids.map(&Block.method(:find))
-  end
-
-  def destroy_descendants!
-    child_blocks.each(&:destroy!)
   end
 
   # `dangling blocks` i.e. blocks not in child_block_ids anymore
