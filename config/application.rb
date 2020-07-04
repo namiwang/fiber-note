@@ -33,5 +33,7 @@ module RoamOnRails
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid
     end
+
+    config.lograge.enabled = true
   end
 end
