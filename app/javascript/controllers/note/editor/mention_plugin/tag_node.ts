@@ -15,25 +15,26 @@ export const tagNode = {
 
   toDOM: node => {
     return [
-      "span",
+      "a",
       {
         "data-tag": node.attrs.tag,
-        class: "prosemirror-tag-node"
+        class: "prosemirror-tag-node",
+        href: `/notes/${node.attrs.tag}`
       },
       "#" + node.attrs.tag
-    ];
+    ]
   },
 
   parseDOM: [
     {
       // match tag with following CSS Selector
-      tag: "span[data-tag]",
+      tag: "a[data-tag]",
 
       getAttrs: dom => {
-        var tag = dom.getAttribute("data-tag");
+        let tag = dom.getAttribute("data-tag")
         return {
           tag: tag
-        };
+        }
       }
     }
   ]
