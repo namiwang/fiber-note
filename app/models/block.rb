@@ -74,19 +74,14 @@ class Block < ApplicationRecord
   # can't just use two consecutive callbacks to trigger the same method,
   # so have to use -> { lambdas }
   # https://github.com/rails/rails/issues/19590
-  after_save -> { refresh_notes_nav }, if: :saved_change_to_title? # this covers creating and updating, and notes only
-  after_save -> { refresh_notes_nav }, if: :saved_change_to_tags?
+  after_commit -> { refresh_notes_nav }, if: :saved_change_to_title? # this covers creating and updating, and notes only
+  after_commit -> { refresh_notes_nav }, on: :update, if: :saved_change_to_tags?
   # TODO after_destroy, if: :is_note?
 
   def refresh_notes_nav
     ActionCable.server.broadcast(
       'notes/nav_channel',
-      {
-        event: 'tags_updated',
-        partial: ApplicationController.renderer.render(
-          Notes::NavComponent.new
-        )
-      }
+      { event: 'notes_updated' }
     )
   end
 

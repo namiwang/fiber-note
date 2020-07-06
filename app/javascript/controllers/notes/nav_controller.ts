@@ -3,10 +3,13 @@ import consumer from '../../channels/consumer'
 
 export default class extends Controller {
   private channel
+  private currentNoteId: string
 
   connect() {
     console.log('stimulus: notes--nav connected on:')
     console.log(this.element)
+
+    this.currentNoteId = (<HTMLElement>document.querySelector('[data-controller=note]')).dataset["noteId"]
 
     this.initChannel()
   }
@@ -18,13 +21,22 @@ export default class extends Controller {
 
       received: (data: JSON) => {
         switch (data['event']) {
-          case 'tags_updated':
+          case 'notes_updated':
+            this.requestPartial()
+            break
+          case 'partial_rendered':
             this.replacePartial(data['partial'])
             break
           default:
             break
         }
       }
+    })
+  }
+
+  private requestPartial() {
+    this.channel.perform('request_partial', {
+      current_note_id: this.currentNoteId
     })
   }
 

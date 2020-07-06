@@ -1,5 +1,3 @@
--# TODO current tag and active
-
 %ul#notes-nav.col-md-2.list-group.list-group-flush.overflow-auto{data: {controller: 'notes--nav'}}
   -# .list-group-item
   -#   .input-group.my-3
@@ -7,8 +5,7 @@
   -#     .input-group-append
   -#       %span.input-group-text icon
 
-  -# TODO icon
-  %a.list-group-item.list-group-item-secondary{href: note_path}
+  %a.list-group-item.list-group-item-secondary{class: ('active' if @creating_new), href: note_path, }
     :plain
       <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-earmark-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path d="M9 1H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h5v-1H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h5v2.5A1.5 1.5 0 0 0 10.5 6H13v2h1V6L9 1z"/>
@@ -17,6 +14,11 @@
       </svg>
     new
 
-  - @available_tags.each do |tag|
-    %a.list-group-item.list-group-item-secondary{href: note_path(title: tag)}
-      = tag
+  - if !@creating_new
+    %a.list-group-item.list-group-item-secondary.active{href: note_path(title: @current_note.title)}
+      = @current_note.title
+
+  - @note_titles.each do |note|
+    - next if note == @current_note.title
+    %a.list-group-item.list-group-item-secondary{href: note_path(title: note)}
+      = note
