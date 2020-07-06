@@ -15,22 +15,6 @@ import { noteSchema } from './editor/schemas'
 import { sinkListItem, liftListItem } from "prosemirror-schema-list"
 import { createTopList, splitListItemAndStripAttrs } from "./editor/list_cmds"
 
-type SerializedContent = [string, JSON[]]
-
-// blocks: [{type: list_item, content: [{p}, {bullet_list}]}]
-function serializeDoc(doc): SerializedContent {
-  let content = doc.content.toJSON()
-
-  let title = content.shift().content[0].text.trim()
-
-  if (content.length == 0) { return [title, []] }
-
-  let topList = content[0]
-  let blocks = topList.content
-
-  return [title, blocks]
-}
-
 export default class NoteEditor {
   private view: EditorView
 
@@ -38,7 +22,7 @@ export default class NoteEditor {
     private noteController: NoteController,
     editorHolder: Element,
     contentJSON: JSON,
-    availableTags: string[]
+    availableTags: string[],
   ) {
     let state = EditorState.create({
       doc: noteSchema.nodeFromJSON(contentJSON),
@@ -147,12 +131,24 @@ export default class NoteEditor {
     if (!transaction.docChanged) { return }
 
     let editor = <NoteEditor>this['editor']
-    let [title, blocks] = serializeDoc(newState.doc)
+    let [title, blocks] = editor.serializeDoc(newState.doc)
 
     console.log('notifying note_controller…')
     console.log(newState.doc.toJSON())
 
     editor.noteController.updateTitle(title)
     editor.noteController.updateBlocks(blocks)
+  }
+
+  // title: string
+  // blocks: [{type: list_item, content: [{p}, {bullet_list}]}]
+  private serializeDoc(doc): [string, JSON[]] {
+    let content = <JSON[]>doc.content.toJSON()
+
+    let title = content.find((b) => b['type'] == 'h1')['content'][0].text.trim()
+    let topList = content.find((b) => b['type'] == 'bullet_list')
+    let blocks = topList ? topList['content'] : []
+
+    return [title, blocks]
   }
 }

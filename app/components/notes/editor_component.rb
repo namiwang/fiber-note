@@ -3,7 +3,7 @@ class Notes::EditorComponent < ViewComponent::Base
     mode = if block.is_note? then :note else :block end
 
     @editor_data = {
-      mode: mode,
+      # mode: mode,
       note: {
         id: block.id,
         title: block.title,
