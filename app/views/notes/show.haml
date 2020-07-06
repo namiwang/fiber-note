@@ -2,5 +2,11 @@
 
 .col-md-8.bg-light
   = render Notes::EditorComponent.new(@note)
-  -# #linked-blocks
-  -#   = render partial: 'block_editor', collection: @linked_blocks, as: :block
+
+  #linked-blocks
+    - @linked_blocks.each do |block|
+      %hr
+      linked block from
+      = link_to block.root_note.title, note_path(title: block.root_note.title)
+
+      = render Notes::EditorComponent.new(block)

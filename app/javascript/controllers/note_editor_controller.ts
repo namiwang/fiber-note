@@ -2,7 +2,7 @@ import { Controller } from 'stimulus'
 import NoteEditor from './note/note_editor'
 import Note from '../models/note'
 
-export default class NoteController extends Controller {
+export default class NoteEditorController extends Controller {
   static targets = ['loader', 'titleMerger']
 
   // https://github.com/stimulusjs/stimulus/search?q=targets+typescript&type=Issues
@@ -16,12 +16,12 @@ export default class NoteController extends Controller {
   private updatingBlocks: boolean = false
 
   connect() {
-    console.log('stimulus: note connected on:')
+    console.log('stimulus: note editor connected on:')
     console.log(this.element)
 
     this.note = new Note(
-      this.data.get('id'),
-      this.data.get('title')
+      this.data.get('note-id'),
+      this.data.get('note-title')
     )
 
     this.initEditor()
@@ -33,8 +33,8 @@ export default class NoteController extends Controller {
     this.editor = new NoteEditor(
       this,
       this.element,
-      JSON.parse(this.data.get('content')),
-      JSON.parse(this.data.get('availableTags')),
+      JSON.parse(this.data.get('note-content')),
+      JSON.parse(this.data.get('available-tags')),
     )
     this.editor.focusAtEnd()
   }

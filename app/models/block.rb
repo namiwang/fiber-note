@@ -34,6 +34,10 @@ class Block < ApplicationRecord
 
   before_destroy :destroy_descendants! # expect to destroy recursively
 
+  def destroy_descendants!
+    child_blocks.each(&:destroy!)
+  end
+
   def child_blocks
     # TODO PERFORMANCE
     # 
@@ -43,10 +47,6 @@ class Block < ApplicationRecord
     # https://stackoverflow.com/questions/866465/order-by-the-in-value-list
     # 
     child_block_ids.map(&Block.method(:find))
-  end
-
-  def destroy_descendants!
-    child_blocks.each(&:destroy!)
   end
 
   # TODO

@@ -7,7 +7,7 @@ import { baseKeymap } from "prosemirror-commands"
 // import { gapCursor } from "prosemirror-gapcursor"
 import { history } from "prosemirror-history"
 
-import NoteController from "controllers/note_controller"
+import NoteController from "controllers/note_editor_controller"
 import { createBlockIdPlugin } from "./editor/block_id_plugin"
 import { getMentionsPlugin } from "./editor/mention_plugin/mention_plugin"
 

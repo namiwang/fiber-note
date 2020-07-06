@@ -1,15 +1,4 @@
-:ruby
-  note_data = {
-    controller: 'note',
-    note: {
-      id: @note.id,
-      title: @note.title,
-      content: BlockSerializer.new(@note).as_note_doc.to_json,
-      available_tags: [] # TODO available_tags
-    }
-  }
-
-.note-editor.text-dark.p-3{data: note_data}
+.note-editor.text-dark.p-3{data: {controller: 'note-editor', note_editor: @editor_data}}
   .banner
-    .loader.spinner-border.spinner-border-sm.text-secondary{data: {target: 'note.loader'}}
-    .title-merger{data: {target: 'note.titleMerger'}} title merger
+    .loader.spinner-border.spinner-border-sm.text-secondary{data: {target: 'note-editor.loader'}}
+    .title-merger{data: {target: 'note-editor.titleMerger'}} title merger

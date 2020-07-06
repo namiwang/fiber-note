@@ -5,5 +5,10 @@ class NotesController < ApplicationController
         id: SecureRandom.uuid,
         title: params[:title]
       )
+
+    # TODO
+    # - exclude current note
+    # - group by note
+    @linked_blocks = Block.with_any_tags @note.title
   end
 end
