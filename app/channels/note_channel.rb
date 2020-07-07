@@ -25,7 +25,7 @@ class NoteChannel < ApplicationCable::Channel
   def update_title data
     title = data['note']['title']
 
-    @note.update! title: title
+    Blocks::UpdateTitleService.new(@note, title).perform!
 
     broadcast_to @note, { event: 'title_updated', requested_at: data['requested_at'] }
 
