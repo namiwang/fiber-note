@@ -65,3 +65,5 @@ gem "acts-as-taggable-array-on"
 gem 'view_component'
 
 gem 'lograge'
+
+gem 'simple_calendar', '~> 2.0'
