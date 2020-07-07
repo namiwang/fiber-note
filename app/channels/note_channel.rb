@@ -3,7 +3,8 @@ class NoteChannel < ApplicationCable::Channel
     # initialize is not enough due to concurrent racing
     @note = Block.notes.find_or_create_by(
       id: params[:id],
-      title: params[:title]
+      title: params[:title],
+      is_note: true,
     )
 
     stream_for @note

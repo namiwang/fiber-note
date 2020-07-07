@@ -3,6 +3,7 @@ class NotesController < ApplicationController
     @note = Block.notes.find_by(title: params[:title]) ||
       Block.new(
         id: SecureRandom.uuid,
+        is_note: true,
         title: params[:title]
       )
 

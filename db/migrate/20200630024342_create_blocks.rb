@@ -10,6 +10,7 @@ class CreateBlocks < ActiveRecord::Migration[6.0]
       t.uuid :child_block_ids, null: false, array: true, default: [], index: {using: :gin}
 
       # note
+      t.boolean :is_note, null: false, index: true
       t.string :title, null: true, index: {unique: true}
 
       t.timestamps

@@ -1,6 +1,8 @@
 class Notes::EditorComponent < ViewComponent::Base
   def initialize block
-    note = if block.is_note? then block else block.root_note end
+    mode = if block.is_note then :note else :block end
+
+    note = if mode == :note then block else block.root_note end
 
     @editor_data = {
       note: {
@@ -11,9 +13,7 @@ class Notes::EditorComponent < ViewComponent::Base
       available_tags: Block.available_tags,
     }
 
-    # in linked block
-    # TODO better naming
-    if block.is_note?
+    if mode == :block
       @editor_data[:hidden_block_ids] = note.child_block_ids - [note.id]
     end
   end

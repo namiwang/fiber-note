@@ -4,6 +4,7 @@
 #
 #  id              :uuid             not null, primary key
 #  child_block_ids :uuid             default([]), not null, is an Array
+#  is_note         :boolean          not null
 #  paragraph       :jsonb            not null
 #  tags            :string           default([]), not null, is an Array
 #  title           :string
@@ -15,6 +16,7 @@
 # Indexes
 #
 #  index_blocks_on_child_block_ids  (child_block_ids) USING gin
+#  index_blocks_on_is_note          (is_note)
 #  index_blocks_on_parent_id        (parent_id)
 #  index_blocks_on_root_note_id     (root_note_id)
 #  index_blocks_on_tags             (tags) USING gin
@@ -76,7 +78,7 @@ class Block < ApplicationRecord
   # https://github.com/rails/rails/issues/19590
   after_commit -> { refresh_notes_nav }, if: :saved_change_to_title? # this covers creating and updating, and notes only
   after_commit -> { refresh_notes_nav }, on: :update, if: :saved_change_to_tags?
-  # TODO after_destroy, if: :is_note?
+  # TODO after_destroy, if: :is_note
 
   def refresh_notes_nav
     ActionCable.server.broadcast(
@@ -89,7 +91,8 @@ class Block < ApplicationRecord
   # notes
   # 
 
-  scope :notes, -> { where.not(title: nil) }
+  scope :notes, -> { where(is_note: true) }
+  scope :not_notes, -> { where(is_note: false) }
 
   # TODO
   # DEPRECATION WARNING:
@@ -98,10 +101,6 @@ class Block < ApplicationRecord
   # To instead access the full set of models, as Rails 6.1 will, use `Block.default_scoped`.
   def self.available_tags
     (all_tags + notes.pluck(:title)).uniq
-  end
-
-  def is_note?
-    !title.blank?
   end
 
   # TODO make it a service
