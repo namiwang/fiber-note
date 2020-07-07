@@ -3,7 +3,8 @@ class NetworkController < ApplicationController
     @nodes = Block.available_tags.map do |tag|
       {
         data: {
-          id: tag, href: note_path(tag)
+          id: tag,
+          href: note_path(tag),
         }
       }
     end

@@ -25,16 +25,29 @@ export default class extends Controller {
         nodes: nodes,
         edges: edges
       },
-      layout: { name: 'cose' },
+      layout: {
+        name: 'grid',
+        animate: false
+      },
       style: [
         {
           selector: 'node',
           style: {
             'label': 'data(id)'
           }
+        },
+        { // TODO dont know why but the edge arrow is not working
+          selector: 'edge',
+          style: {
+            'target-arrow-shape': 'triangle',
+            'target-arrow-fill': 'hollow',
+          }
         }
-      ]
+      ],
     })
+
+    cy.zoom(0.85)
+    cy.center()
 
     cy.on('tap', 'node', function(){
       window.location.href = this.data('href')
