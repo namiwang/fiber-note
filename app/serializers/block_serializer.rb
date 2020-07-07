@@ -4,7 +4,7 @@
 #
 #  id              :uuid             not null, primary key
 #  child_block_ids :uuid             default([]), not null, is an Array
-#  is_note         :boolean          not null
+#  is_note         :boolean          default(FALSE), not null
 #  paragraph       :jsonb            not null
 #  tags            :string           default([]), not null, is an Array
 #  title           :string

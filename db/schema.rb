@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 2020_06_30_024342) do
     t.uuid "parent_id"
     t.uuid "root_note_id"
     t.uuid "child_block_ids", default: [], null: false, array: true
-    t.boolean "is_note", null: false
+    t.boolean "is_note", default: false, null: false
     t.string "title"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

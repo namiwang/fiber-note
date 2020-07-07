@@ -9,6 +9,8 @@ export default class NoteEditorController extends Controller {
   loaderTarget: HTMLElement
   titleMergerTarget: HTMLElement
 
+  private mode: string // note/block
+
   private note: Note
   private editor: NoteEditor
 
@@ -19,12 +21,18 @@ export default class NoteEditorController extends Controller {
     console.log('stimulus: note editor connected on:')
     console.log(this.element)
 
+    this.mode = this.data.get('mode')
+
     this.note = new Note(
       this.data.get('note-id'),
       this.data.get('note-title')
     )
 
     this.initEditor()
+
+    if (this.mode == 'block') {
+      this.hideBlocks()
+    }
 
     this.refreshLoader()
   }
@@ -37,6 +45,15 @@ export default class NoteEditorController extends Controller {
       JSON.parse(this.data.get('available-tags')),
     )
     this.editor.focusAtEnd()
+  }
+
+  private hideBlocks() {
+    let hiddenBlockIds: string[] = JSON.parse(this.data.get('hidden-block-ids'))
+    let selector = hiddenBlockIds.map((id) => `[data-block-id="${id}"]`).join(', ')
+    let elements = this.element.querySelectorAll(selector)
+    elements.forEach((element: HTMLElement) => {
+      element.style.display = 'none'
+    })
   }
 
   public updateTitle(title: string) {
