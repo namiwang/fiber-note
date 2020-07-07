@@ -38,13 +38,22 @@ const nodes = {
   list_item: {
     content: "paragraph bullet_list?",
     defining: true,
-    attrs: { block_id: { default: '' } },
+    attrs: { block_id: { default: '' }, hidden: { default: false } },
     parseDOM: [{
       tag: "li",
-      getAttrs: (dom) => ({block_id: dom.getAttribute("data-block-id")})
+      getAttrs: (dom) => ({
+        block_id: dom.getAttribute("data-block-id"),
+        hidden: dom.getAttribute("data-hidden")
+      })
     }],
     toDOM(node) {
-      return ["li", {"data-block-id": node.attrs.block_id}, 0]
+      return [
+        "li", {
+          "data-block-id": node.attrs.block_id,
+          "data-hidden": node.attrs.hidden,
+        },
+        0
+      ]
     }
   },
 

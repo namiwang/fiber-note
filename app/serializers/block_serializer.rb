@@ -29,8 +29,11 @@
 #
 
 class BlockSerializer
-  def initialize block
+  # if focusing_block exists,
+  # add attr hidden: true to all other blocks
+  def initialize block, focusing_block
     @block = block
+    @focusing_block = focusing_block
   end
 
   def as_note_doc
@@ -57,17 +60,15 @@ class BlockSerializer
       content << {
         type: 'bullet_list',
         content: @block.child_blocks.map{ |block|
-          as_list_item_node block
+          as_list_item_node block, (@focusing_block && @focusing_block != block)
         }
       }
     end
 
-    doc = {
+    {
       type: 'doc',
       content: content
     }
-
-    doc
   end
 
   private
@@ -75,7 +76,7 @@ class BlockSerializer
   # node as in fragment for editor, without the `doc` wrapper, like
   # {type: paragraph, content: [{type: text, content: 'foo'}]}
   # 
-  def as_list_item_node block
+  def as_list_item_node block, hidden = false
     content = [block.paragraph]
 
     if !block.child_blocks.empty?
@@ -89,7 +90,10 @@ class BlockSerializer
 
     doc = {
       type: 'list_item',
-      attrs: { block_id: block.id },
+      attrs: {
+        block_id: block.id,
+        hidden: hidden,
+      },
       content: content,
     }
 

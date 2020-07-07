@@ -30,10 +30,6 @@ export default class NoteEditorController extends Controller {
 
     this.initEditor()
 
-    if (this.mode == 'block') {
-      this.hideBlocks()
-    }
-
     this.refreshLoader()
   }
 
@@ -45,15 +41,6 @@ export default class NoteEditorController extends Controller {
       JSON.parse(this.data.get('available-tags')),
     )
     this.editor.focusAtEnd()
-  }
-
-  private hideBlocks() {
-    let hiddenBlockIds: string[] = JSON.parse(this.data.get('hidden-block-ids'))
-    let selector = hiddenBlockIds.map((id) => `[data-block-id="${id}"]`).join(', ')
-    let elements = this.element.querySelectorAll(selector)
-    elements.forEach((element: HTMLElement) => {
-      element.style.display = 'none'
-    })
   }
 
   public updateTitle(title: string) {
