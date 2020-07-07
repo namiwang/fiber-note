@@ -9,7 +9,7 @@ export default class extends Controller {
     console.log('stimulus: notes--nav connected on:')
     console.log(this.element)
 
-    this.currentNoteId = (<HTMLElement>document.querySelector('[data-controller=note-editor]')).dataset["noteId"]
+    this.currentNoteId = (<HTMLElement>document.querySelector('[data-controller=note-editor]')).dataset["noteEditorNoteId"]
 
     this.initChannel()
   }
