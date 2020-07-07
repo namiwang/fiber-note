@@ -89,7 +89,8 @@ class BlockSerializer
 
     doc = {
       type: 'list_item',
-      content: content
+      attrs: { block_id: block.id },
+      content: content,
     }
 
     doc
