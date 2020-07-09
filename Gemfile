@@ -70,4 +70,5 @@ gem 'simple_calendar', '~> 2.0'
 
 group :production do
   gem 'skylight'
+  gem 'sentry-raven'
 end
