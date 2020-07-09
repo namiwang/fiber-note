@@ -1,8 +1,8 @@
 # TODO
-# - duplicate title
-# - trigger update nav
 # - update existing tags
 class Blocks::UpdateTitleService
+  class DuplicateTitleError < StandardError; end
+
   def initialize block, new_title
     @note = block
     raise 'NotANote' unless @note.is_note
@@ -18,5 +18,7 @@ class Blocks::UpdateTitleService
 
     # TODO async
     Block.refresh_notes_nav
+  rescue ActiveRecord::RecordNotUnique
+    raise DuplicateTitleError.new
   end
 end

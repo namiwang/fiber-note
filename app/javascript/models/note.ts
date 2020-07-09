@@ -11,6 +11,7 @@ export default class Note {
   private updatingBlocksDebouncer: number
 
   private onTitleUpdated: () => void
+  private onTitleDuplicated: (string) => void
   private onBlocksUpdated: () => void
 
   constructor(
@@ -37,21 +38,27 @@ export default class Note {
       case 'title_updated':
         if (data['requested_at'] != this.latestUpdatingTitleRequsetedAt) { return }
         this.onTitleUpdated()
-        break;
+        break
+      case 'title_duplicated':
+        if (data['requested_at'] != this.latestUpdatingTitleRequsetedAt) { return }
+        this.onTitleDuplicated(data['data']['duplicated_title'])
+        break
       case 'blocks_updated':
         if (data['requested_at'] != this.latestUpdatingBlocksRequsetedAt) { return }
         this.onBlocksUpdated()
-        break;
+        break
       default:
-        break;
+        throw 'InvalidEvent'
     }
   }
 
   public updateTitleLater(
     title: string,
     updatedHandler,
+    duplicatedHandler,
   ) {
     this.onTitleUpdated = updatedHandler
+    this.onTitleDuplicated = duplicatedHandler
 
     if (this.updatingTitleDebouncer) {
       clearTimeout(this.updatingTitleDebouncer)

@@ -17,6 +17,8 @@ export default class NoteEditorController extends Controller {
   private updatingTitle: boolean = false
   private updatingBlocks: boolean = false
 
+  private duplicatedTitle: string
+
   connect() {
     console.log('stimulus: note editor connected on:')
     console.log(this.element)
@@ -48,11 +50,20 @@ export default class NoteEditorController extends Controller {
     this.note.updateTitleLater(
       title,
       () => this.handleTitleUpdated(),
+      (title: string) => this.handleTitleDuplicated(title),
     )
   }
 
   private handleTitleUpdated() {
     this.setUpdatingTitle(false)
+    this.setDuplicatedTitle(null)
+  }
+
+  private handleTitleDuplicated(duplicatedTitle: string) {
+    if (this.duplicatedTitle) { return }
+
+    this.setUpdatingTitle(false)
+    this.setDuplicatedTitle(duplicatedTitle)
   }
 
   public updateBlocks(blocks: JSON[]) {
@@ -77,9 +88,27 @@ export default class NoteEditorController extends Controller {
     this.refreshLoader()
   }
 
+  private setDuplicatedTitle(title: string) {
+    this.duplicatedTitle = title
+
+    this.titleMergerTarget.innerHTML = `
+      content not saving due to title conflicting with 
+      <span class="duplicated-title">
+        ${title}
+      </span>
+    `
+    let display = this.duplicatedTitle ? 'block' : 'none'
+    this.titleMergerTarget.style.display = display
+
+    this.refreshLoader()
+  }
+
   private refreshLoader() {
     let loading = this.updatingTitle || this.updatingBlocks
-    let visibility = loading ? 'visible' : 'hidden'
-    this.loaderTarget.style.visibility = visibility
+    let display = loading ? 'block' : 'none'
+
+    if (this.duplicatedTitle) { display = 'none' }
+
+    this.loaderTarget.style.display = display
   }
 }

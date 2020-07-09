@@ -27,9 +27,18 @@ class NoteChannel < ApplicationCable::Channel
 
     Blocks::UpdateTitleService.new(@note, title).perform!
 
-    broadcast_to @note, { event: 'title_updated', requested_at: data['requested_at'] }
-
-    # TODO another note with duplicate title
+    broadcast_to @note, {
+      event: 'title_updated',
+      requested_at: data['requested_at']
+    }
+  rescue Blocks::UpdateTitleService::DuplicateTitleError
+    broadcast_to @note, {
+      event: 'title_duplicated',
+      requested_at: data['requested_at'],
+      data: {
+        duplicated_title: title
+      }
+    }
   end
 
   # data:
