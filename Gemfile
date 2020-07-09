@@ -67,3 +67,7 @@ gem 'view_component'
 gem 'lograge'
 
 gem 'simple_calendar', '~> 2.0'
+
+group :production do
+  gem 'skylight'
+end
