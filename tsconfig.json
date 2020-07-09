@@ -12,7 +12,7 @@
         "*": ["node_modules/*", "app/javascript/*"]
     },
     "sourceMap": true,
-    "target": "es6"
+    "target": "es2019"
   },
   "exclude": [
     "**/*.spec.ts",
