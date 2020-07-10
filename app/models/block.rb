@@ -108,7 +108,7 @@ class Block < ApplicationRecord
   # To continue using the scoped relation, pass it into the block directly.
   # To instead access the full set of models, as Rails 6.1 will, use `Block.default_scoped`.
   def self.available_tags
-    (all_tags + notes.pluck(:title)).uniq
+    (all_tags + notes.pluck(:title)).uniq.compact
   end
 
   # TODO make it a service

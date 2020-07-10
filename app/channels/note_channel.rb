@@ -10,10 +10,8 @@ class NoteChannel < ApplicationCable::Channel
     stream_for @note
   end
 
-  def unsubscribed
-    # destroy if untouched
-    @note.destroy! if @note.title.blank?
-  end
+  # def unsubscribed
+  # end
 
   # TODO
   # - update existing tags
