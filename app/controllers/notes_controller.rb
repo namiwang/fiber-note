@@ -10,6 +10,6 @@ class NotesController < ApplicationController
     # TODO
     # - exclude current note
     # - group by note
-    @linked_blocks = Block.with_any_tags @note.title
+    @linked_blocks = Block.not_notes.with_any_tags @note.title
   end
 end

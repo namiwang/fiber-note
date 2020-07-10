@@ -29,11 +29,20 @@
 #
 
 class BlockSerializer
-  # if focusing_block exists,
-  # add attr hidden: true to all other blocks
+  # if focusing_block exists, hide all blocks,
+  # except for ancestors, i.e. those on the path from root to block
+  # 
+  # the PERFORMANCE of such procedure could be optimized
+  # a) we dont have to touch all blocks inside a `already hidden sub tree`
+  # 
   def initialize block, focusing_block
     @block = block
     @focusing_block = focusing_block
+
+    if @focusing_block
+      @focusing_block_ids = @focusing_block.ancestor_ids
+      @inside_focusing_block = false
+    end
   end
 
   def as_note_doc
@@ -60,7 +69,7 @@ class BlockSerializer
       content << {
         type: 'bullet_list',
         content: @block.child_blocks.map{ |block|
-          as_list_item_node block, (@focusing_block && @focusing_block != block)
+          as_list_item_node block
         }
       }
     end
@@ -75,18 +84,31 @@ class BlockSerializer
 
   # node as in fragment for editor, without the `doc` wrapper, like
   # {type: paragraph, content: [{type: text, content: 'foo'}]}
-  # 
-  def as_list_item_node block, hidden = false
+  def as_list_item_node block
     content = [block.paragraph]
 
     if !block.child_blocks.empty?
+      if block == @focusing_block
+        @inside_focusing_block = true
+      end
+
       content << {
         type: 'bullet_list',
         content: block.child_blocks.map{ |child_block|
           as_list_item_node child_block
         }
       }
+
+      if block == @focusing_block
+        @inside_focusing_block = false
+      end
     end
+
+    hidden = @focusing_block && if @inside_focusing_block
+                                  false
+                                else
+                                  !@focusing_block_ids.include?(block.id)
+                                end
 
     doc = {
       type: 'list_item',

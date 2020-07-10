@@ -51,6 +51,19 @@ class Block < ApplicationRecord
     child_block_ids.map(&Block.method(:find))
   end
 
+  # from self to root, including self and root
+  def ancestor_ids
+    current_block = self
+    ids = []
+
+    loop do
+      ids << current_block.id
+      break unless current_block = current_block.parent
+    end
+
+    ids
+  end
+
   # TODO
   # - async
   # - service
