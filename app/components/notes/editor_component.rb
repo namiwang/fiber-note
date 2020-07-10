@@ -17,9 +17,5 @@ class Notes::EditorComponent < ViewComponent::Base
       },
       available_tags: Block.available_tags,
     }
-
-    if mode == :block
-      @editor_data[:hidden_block_ids] = note.child_block_ids - [note.id]
-    end
   end
 end
