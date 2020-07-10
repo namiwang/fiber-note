@@ -10,11 +10,15 @@ A roam-like networked note-taking app. open and self-hosting.
 
 <a href="https://roam-on-rails-demo.herokuapp.com" target="_blank">A public demo</a>
 
+> This public instance is deployed on a tiny heroku dyno and the performance has not been optimized for a lots-of-concurrent-user case.
+
 # deployment
 
 ## heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+> The performance of an instance deployed on heroku is not ideal. Though, it should be enough for a single-user case. To boost performance, one should switch from actioncable to anycable.
 
 ## dependencies
 
