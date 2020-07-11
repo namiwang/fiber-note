@@ -52,7 +52,6 @@ class NoteChannel < ApplicationCable::Channel
     child_blocks.each do |block|
       Blocks::CreateOrUpdateService.new(block, @note).perform!
     end
-
     @note.update! child_block_ids: child_blocks.map{|b| b['attrs']['block_id'] }
 
     broadcast_to @note, { event: 'blocks_updated', requested_at: data['requested_at'] }
