@@ -142,10 +142,14 @@ export default class NoteEditor {
 
   // title: string
   // blocks: [{type: list_item, content: [{p}, {bullet_list}]}]
-  private serializeDoc(doc): [string, JSON[]] {
+  private serializeDoc(doc): [string|null, JSON[]] {
     let content = <JSON[]>doc.content.toJSON()
 
-    let title = content.find((b) => b['type'] == 'h1')['content'][0].text.trim()
+    // title
+    let titleNodeContent = content.find((b) => b['type'] == 'h1')['content']
+    let title = titleNodeContent ? titleNodeContent[0].text.trim() : null
+
+    // blocks
     let topList = content.find((b) => b['type'] == 'bullet_list')
     let blocks = topList ? topList['content'] : []
 
