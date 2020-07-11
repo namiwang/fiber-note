@@ -14,9 +14,8 @@
       </svg>
     new
 
-  - if !@creating_new
-    %a.list-group-item.list-group-item-secondary.active{href: note_path(title: @current_note.title)}
-      = @current_note.title
+  %a.list-group-item.list-group-item-secondary.active{href: note_path(title: @current_note.title)}
+    = @current_note.title
 
   - @note_titles.each do |note|
     - next if note == @current_note.title
