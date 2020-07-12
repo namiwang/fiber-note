@@ -1,6 +1,6 @@
 = render Notes::NavComponent.new(@note)
 
-.col-md-8.bg-light
+.col-md-8.bg-light{data: {controller: 'notes--editor-wrapper', action: 'click->notes--editor-wrapper#click'}}
   = render Notes::EditorComponent.new(@note)
 
   #linked-blocks

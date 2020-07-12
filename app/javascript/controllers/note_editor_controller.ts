@@ -42,6 +42,10 @@ export default class NoteEditorController extends Controller {
       JSON.parse(this.data.get('note-content')),
       JSON.parse(this.data.get('available-tags')),
     )
+    this.focus()
+  }
+
+  focus() {
     this.editor.focusAtEnd()
   }
 
