@@ -11,7 +11,7 @@ export default class extends Controller {
 
   click(event: Event) {
     if (event.target == this.element) { // on wrapper, not on any editor
-      let downmostEditor = last(document.querySelectorAll('[data-controller=note-editor]'))
+      let downmostEditor = last(this.element.querySelectorAll('[data-controller=note-editor]'))
       let noteEditorController = this.application.getControllerForElementAndIdentifier(downmostEditor, 'note-editor') as NoteEditorController
       noteEditorController.focus()
     }

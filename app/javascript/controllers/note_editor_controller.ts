@@ -45,6 +45,12 @@ export default class NoteEditorController extends Controller {
     this.focus()
   }
 
+  click(event: Event) {
+    if (event.target == this.element) { // on wrapper, not on the editor
+      this.focus()
+    }
+  }
+
   focus() {
     this.editor.focusAtEnd()
   }
