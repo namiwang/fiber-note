@@ -1,7 +1,7 @@
 import { EditorState, Transaction, TextSelection } from "prosemirror-state"
 import { canSplit } from "prosemirror-transform"
 import { EditorView } from "prosemirror-view"
-import { noteSchema } from "./schemas"
+import { noteSchema } from "./schema"
 import { Fragment, Slice } from "prosemirror-model"
 
 // hijack this
