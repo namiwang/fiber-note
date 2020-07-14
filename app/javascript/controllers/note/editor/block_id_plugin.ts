@@ -8,12 +8,11 @@ import { noteSchema } from "./schema"
 export const createBlockIdPlugin = () => {
   return new Plugin({
     appendTransaction: (transactions, _prevState, nextState) => {
-      console.log("block_id_plugin:appendTransaction")
-      // start a transaction
       const transaction = nextState.tr
 
       let modified = false
       if (transactions.some((transaction) => transaction.docChanged)) {
+        console.log("block_id_plugin:appendTransaction")
 
         nextState.doc.descendants((node, pos, _parent) => {
           if (

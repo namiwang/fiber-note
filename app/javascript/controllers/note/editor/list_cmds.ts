@@ -3,12 +3,15 @@ import { canSplit } from "prosemirror-transform"
 import { EditorView } from "prosemirror-view"
 import { noteSchema } from "./schema"
 import { Fragment, Slice } from "prosemirror-model"
-import { uuid } from "uuidv4"
 
-// hijack this
-// `"Enter": chainCommands(newlineInCode, createParagraphNear, liftEmptyBlock, splitBlock),`
-// especially `createParagraphNear`
-// https://github.com/ProseMirror/prosemirror-commands/blob/master/src/commands.js#L574
+// current logic: 
+// if 1) cursor at the end of title and 2) only one title
+// then 1) create a top bullet_list as needed and 2) move cursor
+// 
+// TODO future
+// if 1) cursor at the end of title
+// then 1) create a top bullet_list as needed
+// 2) move cursor
 export function createTopList(
   state: EditorState<any>,
   dispatch: (tr: Transaction<any>) => void,
@@ -21,12 +24,13 @@ export function createTopList(
     // @ts-ignore
     state.doc.content.content.length == 1 &&
     // @ts-ignore
-    state.doc.content.content[0].type.name == 'h1' && // TODO 'title' later
+    state.doc.content.content[0].type == noteSchema.nodes.h1 && // TODO 'title' later
 
     // and selected nothing
     state.selection.empty
 
     // TODO and at the end of the title
+    // TODO how is this already working without this line
     // state.selection.atEnd
   ) {
     let bullet_list = noteSchema.nodes.bullet_list.create(
