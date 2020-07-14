@@ -4,6 +4,8 @@ import { splitListItem, liftListItem, sinkListItem } from "prosemirror-schema-li
 
 import { noteSchema } from './schema'
 import { toggleMark, chainCommands } from "prosemirror-commands"
+import { undo, redo } from "prosemirror-history"
+import { undoInputRule } from "prosemirror-inputrules"
 import { splitListItemAndStripAttrs } from "./list_cmds"
 
 const mac = typeof navigator != "undefined" ? /Mac/.test(navigator.platform) : false
@@ -35,7 +37,6 @@ if (type = noteSchema.marks.em) {
 // 
 // inline: hard break
 // 
-// TODO
 if (type = noteSchema.nodes.hard_break) {
   let br = type, cmd = chainCommands((state, dispatch) => {
     dispatch(state.tr.replaceSelectionWith(br.create()).scrollIntoView())
@@ -61,10 +62,10 @@ bind("Shift-Tab", liftListItem(noteSchema.nodes.list_item))
 // 
 // history
 // 
-// bind("Mod-z", undo)
-// bind("Shift-Mod-z", redo)
-// bind("Backspace", undoInputRule)
-// if (!mac) bind("Mod-y", redo)
+bind("Mod-z", undo)
+bind("Shift-Mod-z", redo)
+bind("Backspace", undoInputRule)
+if (!mac) bind("Mod-y", redo)
 
 // 
 // misc
