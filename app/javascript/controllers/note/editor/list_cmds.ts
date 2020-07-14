@@ -3,6 +3,7 @@ import { canSplit } from "prosemirror-transform"
 import { EditorView } from "prosemirror-view"
 import { noteSchema } from "./schema"
 import { Fragment, Slice } from "prosemirror-model"
+import { uuid } from "uuidv4"
 
 // hijack this
 // `"Enter": chainCommands(newlineInCode, createParagraphNear, liftEmptyBlock, splitBlock),`
@@ -55,8 +56,9 @@ export function createTopList(
 // 
 // this is a forked hijack to fix that
 // 
-// https://discuss.prosemirror.net/t/confused-about-typesafter-in-split-and-how-to-disable-attrs-inheriting/2952
-// https://github.com/prosemirror/prosemirror-schema-list/blob/master/src/schema-list.js
+// related
+// - https://discuss.prosemirror.net/t/confused-about-typesafter-in-split-and-how-to-disable-attrs-inheriting/2952
+// - https://github.com/prosemirror/prosemirror-schema-list/blob/master/src/schema-list.js
 //
 // :: (NodeType) → (state: EditorState, dispatch: ?(tr: Transaction)) → bool
 // Build a command that splits a non-empty textblock at the top level
@@ -90,13 +92,24 @@ export function splitListItemAndStripAttrs(itemType) {
     let nextType = $to.pos == $from.end() ? grandParent.contentMatchAt(0).defaultType : null
     let tr = state.tr.delete($from.pos, $to.pos)
     let types = nextType && [null, {type: nextType}]
+
+    // NOTE
+    // 
+    // still not sure about the logic behind this `nextType` and `types`
+    // 
+    // seems that
+    // 1. cursor at the end of a paragraph
+    //   1. nextType is a `paragraph` (a NodeType)
+    // 2. cursor in the middle of a para
+    //   1. nextType is null
+    // 
+
     if (!canSplit(tr.doc, $from.pos, 2, types)) return false
 
     // HACK
     // 
     // NOTE
-    // I dont know why, dont ask
-    // I tried to *do the right thing* to modify this `types` before `canSplit`,
+    // I tried to *do the right thing* by modifying this `types` before `canSplit`,
     // yet changing it caused `canSplit` to return false
     // spent a day digging into the code,
     // `validContent`, `matchFragment`, eventually `matchType`
@@ -105,8 +118,10 @@ export function splitListItemAndStripAttrs(itemType) {
     // 
     // stopped debugging, made a patch here, and it worked
     // 
+
+    types = types ?? []
     types[0] = {type: itemType}
-    types[0]['attrs'] = {block_id: ''}
+    types[0]['attrs'] = {block_id: null}
 
     if (dispatch) dispatch(tr.split($from.pos, 2, types).scrollIntoView())
     return true

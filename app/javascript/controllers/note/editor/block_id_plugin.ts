@@ -3,6 +3,7 @@
 
 import {Plugin} from "prosemirror-state"
 import {uuid} from "uuidv4"
+import { noteSchema } from "./schema"
 
 export const createBlockIdPlugin = () => {
   return new Plugin({
@@ -16,11 +17,11 @@ export const createBlockIdPlugin = () => {
 
         nextState.doc.descendants((node, pos, _parent) => {
           if (
-            node.type.name == 'list_item' &&
+            node.type == noteSchema.nodes.list_item &&
             !node.attrs["block_id"]
           ) {
-            console.log('setting block_id for:')
-            console.log(node)
+            // console.log('setting block_id for:')
+            // console.log(node)
 
             transaction.setNodeMarkup(
               pos,
