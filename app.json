@@ -4,5 +4,9 @@
   "addons": [
     "heroku-postgresql",
     "heroku-redis"
-  ]
+  ],
+  "scripts": {
+    "postdeploy": "bundle exec rake db:seed"
+  },
+  "success_url": "/notes/welcome"
 }
