@@ -1,6 +1,6 @@
 {
   "name": "Roam on Rails",
-  "description": "An open and self-hosting roam-like networked note-taking app. open and self-hosting.",
+  "description": "A roam-like networked note-taking app which is open and self-hosting.",
   "addons": [
     "heroku-postgresql",
     "heroku-redis"

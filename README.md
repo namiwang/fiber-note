@@ -1,6 +1,6 @@
 # roam on rails
 
-A roam-like networked note-taking app. open and self-hosting.
+A roam-like networked note-taking app which is open and self-hosting.
 
 # screenshots
 
