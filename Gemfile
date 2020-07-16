@@ -53,6 +53,7 @@ group :test do
   gem 'webdrivers'
 
   gem 'simplecov', require: false
+  gem 'codecov', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
