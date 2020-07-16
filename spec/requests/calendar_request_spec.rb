@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe "Calendars", type: :request do
+RSpec.describe "Calendars" do
 
-  describe "GET /show" do
+  describe "GET /calendar" do
     it "returns http success" do
-      get "/calendar/show"
+      get "/calendar"
       expect(response).to have_http_status(:success)
     end
   end
