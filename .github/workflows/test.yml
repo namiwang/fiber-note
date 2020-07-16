@@ -39,6 +39,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gem-
 
+    # https://github.com/actions/cache/blob/main/examples.md#node---yarn
     - name: get yarn cache directory path
       id: yarn-cache-dir-path
       run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -84,3 +85,5 @@ jobs:
 
     - name: codecov
       uses: codecov/codecov-action@v1
+      with:
+        file: './coverage/.resultset.json'
