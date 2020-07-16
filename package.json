@@ -1,5 +1,5 @@
 {
-  "name": "roam_on_rails",
+  "name": "fiber_note",
   "private": true,
   "dependencies": {
     "@rails/actioncable": "^6.0.0",

@@ -16,7 +16,7 @@ blocks = [
     "content" => [{
         "type" => "paragraph",
         "content" => [{
-          "text" => "roam on rails is a networked note-taking app",
+          "text" => "fiber note is a networked note-taking app",
           "type" => "text"
         }]
       },
@@ -144,7 +144,7 @@ blocks = [
           "content" => [{
             "type" => "paragraph",
             "content" => [{
-              "text" => "https://github.com/namiwang/roam-on-rails/issues",
+              "text" => "https://github.com/namiwang/fiber-note/issues",
               "type" => "text"
             }]
           }]

@@ -1,6 +1,6 @@
-# roam on rails
+# fiber note
 
-A roam-like networked note-taking app which is open and self-hosting.
+A networked note-taking app which is open and self-hosting, inspired by roam-research and others.
 
 # screenshots
 
@@ -8,7 +8,7 @@ A roam-like networked note-taking app which is open and self-hosting.
 
 # demo
 
-<a href="https://roam-on-rails-demo.herokuapp.com/notes/welcome" target="_blank">A public demo</a>
+<a href="https://fiber-note-demo.herokuapp.com/notes/welcome" target="_blank">A public demo</a>
 
 > This public instance is deployed on a tiny heroku dyno and the performance has not been optimized for a lots-of-concurrent-user case.
 

@@ -1,6 +1,6 @@
 {
-  "name": "Roam on Rails",
-  "description": "A roam-like networked note-taking app which is open and self-hosting.",
+  "name": "Fiber Note",
+  "description": "A networked note-taking app which is open and self-hosting.",
   "addons": [
     "heroku-postgresql",
     "heroku-redis"
