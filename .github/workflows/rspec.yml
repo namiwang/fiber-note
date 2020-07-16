@@ -1,4 +1,4 @@
-name: ci
+name: rspec
 
 on: [push, pull_request]
 
@@ -10,11 +10,12 @@ jobs:
 
     services:
       db:
-        image: postgres:11
+        image: postgres
         env:
           POSTGRES_USER: runner
           POSTGRES_PASSWORD: postgres # NOTE github ci will complain being `unhealthy` without a password
         ports: ['5432:5432']
+        # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -67,6 +68,7 @@ jobs:
         RAILS_ENV: test
         PGHOST: localhost
         PGUSER: runner
+        PGPASSWORD: postgres
       run: |
         bundle exec rails db:create
         bundle exec rails db:migrate
@@ -78,3 +80,8 @@ jobs:
         PGUSER: runner
       run: |
         bundle exec rspec
+
+    - name: codecov
+      uses: codecov/codecov-action@v1
+      with:
+        directory: './coverage'

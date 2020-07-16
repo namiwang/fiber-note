@@ -1,3 +1,6 @@
+![building](https://github.com/namiwang/fiber-note/workflows/rspec/badge.svg)
+[![codecov](https://codecov.io/gh/namiwang/fiber-note/branch/master/graph/badge.svg)](https://codecov.io/gh/namiwang/fiber-note)
+
 # fiber note
 
 A networked note-taking app which is open and self-hosting, inspired by roam-research and others.
