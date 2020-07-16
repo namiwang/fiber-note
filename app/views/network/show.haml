@@ -1,2 +1,4 @@
 #network-show.col-md-10.bg-light{data: {controller: 'network', network_nodes: @nodes.to_json, network_edges: @edges.to_json}}
+  = render partial: 'shared/github_corner'
+
   #graph{data: {target: 'network.graph'}}
