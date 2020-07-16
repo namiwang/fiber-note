@@ -78,6 +78,7 @@ jobs:
         RAILS_ENV: test
         PGHOST: localhost
         PGUSER: runner
+        PGPASSWORD: postgres
       run: |
         bundle exec rspec
 
