@@ -7,7 +7,7 @@ A networked note-taking app which is open and self-hosting, inspired by roam-res
 
 # screenshots
 
-![screenshot](screenshots/v0.gif?raw=true "screenshot")
+![screenshot](shed/screenshots/v0.gif?raw=true "screenshot")
 
 # demo
 
