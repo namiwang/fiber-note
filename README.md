@@ -1,4 +1,4 @@
-![building](https://github.com/namiwang/fiber-note/workflows/rspec/badge.svg)
+![building](https://github.com/namiwang/fiber-note/workflows/test/badge.svg)
 [![codecov](https://codecov.io/gh/namiwang/fiber-note/branch/master/graph/badge.svg)](https://codecov.io/gh/namiwang/fiber-note)
 
 # fiber note
