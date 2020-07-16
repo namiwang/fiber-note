@@ -78,7 +78,17 @@ class Block < ApplicationRecord
   after_save :parse_tags!, if: :saved_change_to_paragraph?
 
   def parse_tags!
-    Blocks::ParseTagsService.new(self).perform!
+    update! tags: paragraph['content']
+      .select{ |node| node['type'] == 'tag' }
+      .map{ |node| node['attrs']['tag'] }
+      .uniq
+  end
+
+  def update_tags_in_paragraph! old_tag, new_tag
+    paragraph['content']
+      .select{ |node| node['type'] == 'tag' && node['attrs']['tag'] == old_tag }
+      .each{ |node| node['attrs']['tag'] = new_tag }
+    save!
   end
 
   # 

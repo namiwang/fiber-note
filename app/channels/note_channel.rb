@@ -14,16 +14,21 @@ class NoteChannel < ApplicationCable::Channel
   # end
 
   # TODO
-  # - update existing tags
+  # - handle new title empty
   # 
   # data:
   #   note:
   #     id
   #     title
   def update_title data
+    old_title = @note.title
     title = data['note']['title']
 
     Blocks::UpdateTitleService.new(@note, title).perform!
+
+    unless Block.with_any_tags(old_title).empty?
+      Blocks::UpdateTagsService.new(old_title, title).perform!
+    end
 
     broadcast_to @note, {
       event: 'title_updated',
