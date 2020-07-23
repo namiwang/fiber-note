@@ -1,0 +1,7 @@
+#session-new.col-md-10.d-flex.justify-content-center.align-items-center
+  = form_with scope: :session, url: session_path do |f|
+    - if flash[:error]
+      .alert.alert-warning
+        = flash[:error]
+    = f.password_field :password, placeholder: 'password', class: 'form-control mb-3'
+    = f.submit 'sign in', class: 'btn btn-block btn-primary'
