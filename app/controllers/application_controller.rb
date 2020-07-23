@@ -4,6 +4,6 @@ class ApplicationController < ActionController::Base
   private
  
   def enforce_login
-    redirect_to new_session_path unless session[:session]
+    redirect_to new_session_path unless cookies.encrypted[:session_created]
   end
 end

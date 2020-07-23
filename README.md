@@ -31,10 +31,14 @@ The app loads environment variables and behaves accordingly. It uses [dotenv](ht
 
 ### authentication
 
-The app loads password from `ENV['PASSWORD']`, which is `PASSWORD` by default, defined in `.env`.
+The app loads password from `ENV['PASSWORD']`, which is `password` by default, as defined in `.env`.
 
 ### available services
 
 To enable performance analytics by skylight, set environment vars `SKYLIGHT_ENABLED=true` and `SKYLIGHT_AUTHENTICATION=YOUR_TOKEN`.
 
 To enable sentry for error tracking, set an environment var `SENTRY_DSN=YOUR_SENTRY_DSN`.
+
+## cookies
+
+For security reasons (i.e. deploy this repo directly), `secret_key_base` will be randomized every time the server restarts, that includes upgrading to a new version. User may have to do a refresh in browser.
