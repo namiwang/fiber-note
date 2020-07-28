@@ -78,7 +78,7 @@ GEM
       regexp_parser (~> 1.5)
       xpath (~> 3.2)
     childprocess (3.0.0)
-    codecov (0.2.1)
+    codecov (0.2.3)
       colorize
       json
       simplecov
