@@ -6136,10 +6136,10 @@ prosemirror-transform@^1.0.0, prosemirror-transform@^1.1.0, prosemirror-transfor
   dependencies:
     prosemirror-model "^1.0.0"
 
-prosemirror-view@^1.0.0, prosemirror-view@^1.1.0, prosemirror-view@^1.14.13:
-  version "1.14.13"
-  resolved "https://registry.yarnpkg.com/prosemirror-view/-/prosemirror-view-1.14.13.tgz#c86967b2679652ae21f610620f5089ba654cb413"
-  integrity sha512-UmAAi72eHApZ6KMklUTORc9FkmGXyeI+rWtqxqZ+6V4vs6K6spbOVozQChKmtVL2EjQlOILvJIJdWKWu0Hkvpw==
+prosemirror-view@^1.0.0, prosemirror-view@^1.1.0, prosemirror-view@^1.17.4:
+  version "1.17.4"
+  resolved "https://registry.yarnpkg.com/prosemirror-view/-/prosemirror-view-1.17.4.tgz#b9264b1a7cf68f1cad5f90ce2febe8db4ee32581"
+  integrity sha512-giPj4TPq+36bmd35TOZqPTbP90lN+eTInvZUuHnGC/nSsC5HdQFbSOG+7gTeZt3syoOX+NRAo2PDFNJ3jJWVrg==
   dependencies:
     prosemirror-model "^1.1.0"
     prosemirror-state "^1.0.0"
