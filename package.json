@@ -33,7 +33,7 @@
     "@types/prosemirror-schema-basic": "^1.0.1",
     "@types/prosemirror-schema-list": "^1.0.1",
     "@types/prosemirror-state": "^1.2.4",
-    "@types/prosemirror-view": "^1.11.4",
+    "@types/prosemirror-view": "^1.19.1",
     "webpack-dev-server": "^3.11.0"
   }
 }
