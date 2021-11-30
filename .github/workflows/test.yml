@@ -52,7 +52,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-yarn-
 
-    - uses: actions/setup-node@v2.1.1
+    - uses: actions/setup-node@v2.5.0
 
     - name: install deps
       env:
