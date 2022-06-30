@@ -889,10 +889,10 @@
   resolved "https://registry.yarnpkg.com/@stimulus/webpack-helpers/-/webpack-helpers-1.1.1.tgz#eff60cd4e58b921d1a2764dc5215f5141510f2c2"
   integrity sha512-XOkqSw53N9072FLHvpLM25PIwy+ndkSSbnTtjKuyzsv8K5yfkFB2rv68jU1pzqYa9FZLcvZWP4yazC0V38dx9A==
 
-"@types/cytoscape@^3.14.5":
-  version "3.14.5"
-  resolved "https://registry.yarnpkg.com/@types/cytoscape/-/cytoscape-3.14.5.tgz#a8ab5d82250be9bce207e269f3b6dab4666c4a2c"
-  integrity sha512-FhmhUAabEQZ8wTKkvuwPlF3nxvwUrTwb1Oie5M7v9wdcHQu5vSDXh/+4eWRBLjcONpFXGhH44L9oXNqyI2R4yQ==
+"@types/cytoscape@^3.19.5":
+  version "3.19.5"
+  resolved "https://registry.yarnpkg.com/@types/cytoscape/-/cytoscape-3.19.5.tgz#73c4266fd66f62b2f4ea8082a7b6b8403d955a65"
+  integrity sha512-g0jVF8lywg+SpQRhtrHRZicNgKSx54G6JubkiI7O14kWRx4AGGhCIdHg6a7pbEPQg462r/Lr+vJ6C7cxpaw4mA==
 
 "@types/glob@^7.1.1":
   version "7.1.2"
@@ -2450,13 +2450,16 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
-cytoscape@^3.15.1:
-  version "3.15.1"
-  resolved "https://registry.yarnpkg.com/cytoscape/-/cytoscape-3.15.1.tgz#bb5724306c61dfb1500d20ce11cd90ef768fc32b"
-  integrity sha512-xU/0KYoCErDXseKiPYrJJRSwwxbaDSo2rNpKCd7uNPw7ZDrMahCo+fE0agVvw0ce+6gAg5bDnC1pT8AgmaqqtA==
+cytoscape@^3.21.2:
+  version "3.21.2"
+  resolved "https://registry.yarnpkg.com/cytoscape/-/cytoscape-3.21.2.tgz#95ce212092e82decf6a446ac06c64462b34d9d73"
+  integrity sha512-VFvgKCaiPnZHpBQFZP6lYAQrnzNAy62Dw7ehcgejxn1Lb2xX2oaVxTuMrAz0kwRifJK/z9sc6M6I3dObSckUrw==
   dependencies:
     heap "^0.2.6"
     lodash.debounce "^4.0.8"
+    lodash.get "^4.4.2"
+    lodash.set "^4.3.2"
+    lodash.topath "^4.5.2"
 
 dashdash@^1.12.0:
   version "1.14.1"
@@ -4290,7 +4293,7 @@ lodash.debounce@^4.0.8:
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
 
-lodash.get@^4.0:
+lodash.get@^4.0, lodash.get@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
   integrity sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=
@@ -4304,6 +4307,11 @@ lodash.memoize@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
   integrity sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=
+
+lodash.set@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/lodash.set/-/lodash.set-4.3.2.tgz#d8757b1da807dde24816b0d6a84bea1a76230b23"
+  integrity sha512-4hNPN5jlm/N/HLMCO43v8BXKq9Z7QdAGc/VGrRD61w8gN9g/6jF9A4L1pbUgBLCffi0w9VsXfTOij5x8iTyFvg==
 
 lodash.template@^4.5.0:
   version "4.5.0"
@@ -4319,6 +4327,11 @@ lodash.templatesettings@^4.0.0:
   integrity sha512-stgLz+i3Aa9mZgnjr/O+v9ruKZsPsndy7qPZOchbqk2cnTU1ZaldKK+v7m54WoKIyxiuMZTKT2H81F8BeAc3ZQ==
   dependencies:
     lodash._reinterpolate "^3.0.0"
+
+lodash.topath@^4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/lodash.topath/-/lodash.topath-4.5.2.tgz#3616351f3bba61994a0931989660bd03254fd009"
+  integrity sha512-1/W4dM+35DwvE/iEd1M9ekewOSTlpFekhw9mhAtrwjVqUr83/ilQiyAvmg4tVX7Unkcfl1KC+i9WdaT4B6aQcg==
 
 lodash.uniq@^4.5.0:
   version "4.5.0"
